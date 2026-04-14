@@ -1,0 +1,63 @@
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1100;
+  transition: background 0.3s, box-shadow 0.3s;
+}
+
+.navbarScrolled {
+  background: rgba(10, 10, 15, 0.92) !important;
+  backdrop-filter: blur(16px);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.logo {
+  font-size: 1.4rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.logoAccent {
+  color: #00e5ff;
+}
+
+.navLinks {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.navLink {
+  color: #9090a8 !important;
+  font-weight: 500 !important;
+  font-size: 0.92rem !important;
+  border-radius: 8px !important;
+  padding: 6px 14px !important;
+  transition: color 0.2s, background 0.2s !important;
+  text-transform: none !important;
+}
+
+.navLink:hover {
+  color: #e8e8f0 !important;
+  background: rgba(255,255,255,0.05) !important;
+}
+
+.navLinkActive {
+  color: #00e5ff !important;
+  background: rgba(0,229,255,0.08) !important;
+}
+
+.cartBadge {
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}

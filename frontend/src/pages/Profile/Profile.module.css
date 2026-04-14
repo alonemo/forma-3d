@@ -1,0 +1,36 @@
+.hero {
+  padding: 120px 0 48px;
+}
+
+.orderCard {
+  padding: 20px;
+  border-radius: 14px;
+  background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(255,255,255,0.07);
+  margin-bottom: 16px;
+  transition: border-color 0.2s;
+}
+
+.orderCard:hover {
+  border-color: rgba(0,229,255,0.12);
+}
+
+.statusChip {
+  border-radius: 6px !important;
+}
+
+.empty {
+  text-align: center;
+  padding: 60px 0;
+  color: #9090a8;
+}
+
+@media (max-width: 899px) {
+  .hero { padding: 90px 0 32px; }
+}
+
+@media (max-width: 599px) {
+  .hero { padding: 80px 0 24px; }
+  .orderCard { padding: 14px; }
+  .empty { padding: 40px 0; }
+}

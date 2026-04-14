@@ -1,0 +1,49 @@
+.hero {
+  padding: 120px 0 48px;
+  background: radial-gradient(ellipse 60% 50% at 60% 10%, rgba(255,171,64,0.06) 0%, transparent 60%);
+}
+
+.tabPanel {
+  padding: 24px 0;
+}
+
+.tableRow {
+  transition: background 0.15s;
+}
+
+.tableRow:hover {
+  background: rgba(255,255,255,0.02) !important;
+}
+
+.formCard {
+  padding: 28px;
+  border-radius: 16px;
+  background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(255,255,255,0.08);
+  margin-bottom: 24px;
+}
+
+.statusChip {
+  border-radius: 6px !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+}
+
+@media (max-width: 899px) {
+  .hero { padding: 90px 0 32px; }
+  .tabPanel { padding: 16px 0; }
+}
+
+@media (max-width: 599px) {
+  .hero { padding: 80px 0 24px; }
+}
+
+/* hide number input spinners */
+.noSpinner input[type=number]::-webkit-inner-spin-button,
+.noSpinner input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.noSpinner input[type=number] {
+  -moz-appearance: textfield;
+}

@@ -1,0 +1,124 @@
+.hero {
+  padding: 120px 0 48px;
+  background: radial-gradient(ellipse 60% 50% at 70% 20%, rgba(0,229,255,0.06) 0%, transparent 60%);
+}
+
+.filters {
+  position: sticky;
+  top: 80px;
+  padding: 20px;
+  border-radius: 16px;
+  background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(255,255,255,0.07);
+}
+
+.filterTitle {
+  font-size: 0.7rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.12em !important;
+  text-transform: uppercase;
+  color: #70708a;
+  margin-bottom: 6px !important;
+  padding-left: 4px;
+}
+
+/* Category list items */
+.categoryItem {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 7px 10px;
+  border: none;
+  border-left: 2px solid transparent;
+  border-radius: 0 8px 8px 0;
+  background: transparent;
+  color: #a0a0b8;
+  font-size: 0.875rem;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+  font-family: inherit;
+}
+
+.categoryItem:hover {
+  background: rgba(255,255,255,0.05);
+  color: #e0e0f0;
+  border-left-color: rgba(255,255,255,0.1);
+}
+
+.categoryActive {
+  background: rgba(0,229,255,0.08) !important;
+  color: #00e5ff !important;
+  border-left-color: #00e5ff !important;
+}
+
+/* Material pills */
+.materialChip {
+  padding: 5px 12px;
+  border-radius: 20px;
+  border: none;
+  background: rgba(255,255,255,0.06);
+  color: #a0a0b8;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  font-family: inherit;
+  letter-spacing: 0.02em;
+}
+
+.materialChip:hover {
+  background: rgba(255,255,255,0.1);
+  color: #e0e0f0;
+}
+
+.materialActive {
+  background: rgba(0,229,255,0.15) !important;
+  color: #00e5ff !important;
+}
+
+/* Reset button */
+.resetBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.08);
+  background: rgba(255,255,255,0.03);
+  color: #70708a;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+  font-family: inherit;
+}
+
+.resetBtn:hover {
+  background: rgba(255,80,80,0.08);
+  color: #ff6b6b;
+  border-color: rgba(255,80,80,0.2);
+}
+
+.sortBar {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.empty {
+  text-align: center;
+  padding: 80px 0;
+  color: #9090a8;
+}
+
+@media (max-width: 899px) {
+  .hero { padding: 90px 0 32px; }
+}
+
+@media (max-width: 599px) {
+  .hero { padding: 80px 0 24px; }
+  .empty { padding: 48px 0; }
+}

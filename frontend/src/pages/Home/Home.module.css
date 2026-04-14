@@ -1,0 +1,388 @@
+/* ─── Hero ─── */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+  padding-top: 80px;
+}
+
+.heroBg {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 80% 60% at 50% -10%, rgba(0,229,255,0.12) 0%, transparent 60%),
+              radial-gradient(ellipse 60% 50% at 80% 60%, rgba(255,109,0,0.06) 0%, transparent 50%),
+              #0a0a0f;
+}
+
+.particles {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.particle {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(0,229,255,0.15);
+  animation: floatParticle linear infinite;
+}
+
+@keyframes floatParticle {
+  0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { transform: translateY(-100px) rotate(720deg); opacity: 0; }
+}
+
+.heroContent {
+  position: relative;
+  z-index: 2;
+}
+
+.heroTag {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(0,229,255,0.1);
+  border: 1px solid rgba(0,229,255,0.2);
+  border-radius: 100px;
+  padding: 6px 16px;
+  font-size: 0.8rem;
+  color: #00e5ff;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  margin-bottom: 24px;
+  animation: fadeDown 0.6s ease both;
+}
+
+.heroTagDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #00e5ff;
+  animation: blink 1.5s infinite;
+}
+
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
+
+.heroTitle {
+  font-weight: 800;
+  line-height: 1.08;
+  letter-spacing: -0.03em;
+  animation: fadeUp 0.7s 0.1s ease both;
+  word-break: break-word;
+  overflow-wrap: break-word;
+}
+
+.gradientText {
+  background: linear-gradient(135deg, #00e5ff 0%, #7c4dff 50%, #ff6d00 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.heroSub {
+  font-size: 1.15rem;
+  color: #9090a8;
+  line-height: 1.65;
+  max-width: 520px;
+  animation: fadeUp 0.7s 0.2s ease both;
+}
+
+.heroActions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  animation: fadeUp 0.7s 0.3s ease both;
+}
+
+/* ─── 3D Cube ─── */
+.cubeScene {
+  perspective: 600px;
+  width: 300px;
+  height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 1s 0.4s ease both;
+}
+
+.cube {
+  width: 140px;
+  height: 140px;
+  position: relative;
+  transform-style: preserve-3d;
+  animation: rotateCube 10s linear infinite;
+}
+
+@keyframes rotateCube {
+  from { transform: rotateX(20deg) rotateY(0deg); }
+  to { transform: rotateX(20deg) rotateY(360deg); }
+}
+
+.cubeFace {
+  position: absolute;
+  width: 140px;
+  height: 140px;
+  border: 2px solid rgba(0,229,255,0.35);
+  background: rgba(0,229,255,0.03);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.5rem;
+  backdrop-filter: blur(2px);
+}
+
+.cubeFace.front  { transform: translateZ(70px); }
+.cubeFace.back   { transform: rotateY(180deg) translateZ(70px); }
+.cubeFace.left   { transform: rotateY(-90deg) translateZ(70px); }
+.cubeFace.right  { transform: rotateY(90deg) translateZ(70px); }
+.cubeFace.top    { transform: rotateX(90deg) translateZ(70px); }
+.cubeFace.bottom { transform: rotateX(-90deg) translateZ(70px); }
+
+.cubeGlow {
+  position: absolute;
+  inset: -20px;
+  background: radial-gradient(circle, rgba(0,229,255,0.15) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+/* ─── Stats ─── */
+.stats {
+  display: flex;
+  gap: 32px;
+  flex-wrap: wrap;
+  animation: fadeUp 0.7s 0.4s ease both;
+}
+
+.statItem { text-align: center; }
+
+.statNum {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #00e5ff;
+  line-height: 1;
+}
+
+.statLabel {
+  font-size: 0.8rem;
+  color: #9090a8;
+  margin-top: 4px;
+}
+
+/* ─── Features ─── */
+.features {
+  padding: 100px 0;
+  position: relative;
+}
+
+.sectionTag {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #00e5ff;
+  margin-bottom: 12px;
+}
+
+.featureCard {
+  padding: 32px;
+  border-radius: 16px;
+  background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(255,255,255,0.06);
+  height: 100%;
+  transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.featureCard::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  background: radial-gradient(circle at 30% 40%, rgba(0,229,255,0.06) 0%, transparent 60%);
+  transition: opacity 0.3s;
+}
+
+.featureCard:hover {
+  transform: translateY(-6px);
+  border-color: rgba(0,229,255,0.15);
+  box-shadow: 0 20px 60px rgba(0,229,255,0.06);
+}
+
+.featureCard:hover::before { opacity: 1; }
+
+.featureIcon {
+  width: 56px;
+  height: 56px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.6rem;
+  margin-bottom: 20px;
+  position: relative;
+}
+
+/* ─── How it works ─── */
+.howItWorks {
+  padding: 80px 0;
+  background: linear-gradient(180deg, transparent, rgba(0,229,255,0.03) 50%, transparent);
+}
+
+.step {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+  opacity: 0;
+  transform: translateX(-20px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.step.visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.stepNum {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(0,229,255,0.2), rgba(0,229,255,0.05));
+  border: 1px solid rgba(0,229,255,0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 1.1rem;
+  color: #00e5ff;
+  flex-shrink: 0;
+}
+
+/* ─── Materials ─── */
+.materials { padding: 80px 0; }
+
+.materialCard {
+  padding: 24px;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,0.07);
+  background: rgba(255,255,255,0.02);
+  text-align: center;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.materialCard:hover {
+  transform: translateY(-4px);
+}
+
+/* ─── CTA ─── */
+.cta {
+  padding: 100px 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.ctaBg {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 70% 80% at 50% 50%, rgba(0,229,255,0.07) 0%, transparent 70%);
+}
+
+.ctaCard {
+  position: relative;
+  border-radius: 24px;
+  padding: 64px 48px;
+  background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(0,229,255,0.12);
+  text-align: center;
+  overflow: hidden;
+}
+
+.ctaCard::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: conic-gradient(from 0deg at 50% 50%, transparent 0deg, rgba(0,229,255,0.04) 60deg, transparent 120deg);
+  animation: rotateSlow 20s linear infinite;
+}
+
+@keyframes rotateSlow { to { transform: rotate(360deg); } }
+
+/* ─── Keyframe helpers ─── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeDown {
+  from { opacity: 0; transform: translateY(-12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.observeEl {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.observeEl.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ─── Responsive ─── */
+@media (max-width: 899px) {
+  .hero { padding-top: 64px; }
+
+  .heroSub { font-size: 1rem; }
+
+  .cubeScene { width: 200px; height: 200px; }
+
+  .stats { gap: 20px; justify-content: center; }
+  .statNum { font-size: 1.6rem; }
+
+  .features { padding: 60px 0; }
+  .featureCard { padding: 24px; }
+
+  .howItWorks { padding: 50px 0; }
+
+  .materials { padding: 50px 0; }
+
+  .cta { padding: 60px 0; }
+  .ctaCard { padding: 40px 24px; }
+}
+
+@media (max-width: 599px) {
+  .heroSub { font-size: 0.95rem; }
+  .heroTag { font-size: 0.75rem; padding: 5px 12px; }
+  .heroActions { gap: 8px; }
+
+  .cubeScene { width: 160px; height: 160px; }
+
+  .features { padding: 48px 0; }
+  .featureCard { padding: 20px; }
+  .featureIcon { width: 44px; height: 44px; font-size: 1.3rem; }
+
+  .howItWorks { padding: 40px 0; }
+  .step { gap: 14px; }
+  .stepNum { width: 40px; height: 40px; font-size: 1rem; }
+
+  .materials { padding: 40px 0; }
+  .materialCard { padding: 16px; }
+
+  .cta { padding: 48px 0; }
+  .ctaCard { padding: 32px 16px; }
+
+  .stats { gap: 16px; }
+}
