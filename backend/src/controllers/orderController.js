@@ -3,8 +3,14 @@ const { toStr } = require('../utils');
 
 const createCatalogOrder = (req, res) => {
   const { items } = req.body;
-  if (!items || items.length === 0)
+  if (!Array.isArray(items) || items.length === 0)
     return res.status(400).json({ error: 'Корзина пуста' });
+
+  for (const item of items) {
+    const qty = Number(item?.quantity);
+    if (!Number.isInteger(qty) || qty < 1)
+      return res.status(400).json({ error: 'Количество должно быть целым числом от 1' });
+  }
 
   try {
     const result = db.transaction(() => {
@@ -105,13 +111,26 @@ const getUserOrders = (req, res) => {
 };
 
 const cancelOrder = (req, res) => {
-  const order = db.prepare('SELECT * FROM orders WHERE id=? AND user_id=?').get(req.params.id, req.user.id);
-  if (!order) return res.status(404).json({ error: 'Заказ не найден' });
-  if (order.status !== 'created')
-    return res.status(400).json({ error: 'Отменить можно только заказ в статусе «Создан»' });
+  try {
+    db.transaction(() => {
+      const order = db.prepare('SELECT * FROM orders WHERE id=? AND user_id=?').get(req.params.id, req.user.id);
+      if (!order) throw Object.assign(new Error('Заказ не найден'), { status: 404 });
+      if (order.status !== 'created')
+        throw Object.assign(new Error('Отменить можно только заказ в статусе «Создан»'), { status: 400 });
 
-  db.prepare("UPDATE orders SET status='cancelled', updated_at=datetime('now') WHERE id=?").run(req.params.id);
-  res.json({ message: 'Заказ отменён' });
+      if (order.type === 'catalog') {
+        const items = db.prepare('SELECT product_id, quantity FROM order_items WHERE order_id=?').all(order.id);
+        for (const it of items) {
+          db.prepare('UPDATE products SET stock = stock + ? WHERE id=?').run(it.quantity, it.product_id);
+        }
+      }
+
+      db.prepare("UPDATE orders SET status='cancelled', updated_at=datetime('now') WHERE id=?").run(req.params.id);
+    })();
+    res.json({ message: 'Заказ отменён' });
+  } catch (err) {
+    res.status(err.status || 500).json({ error: err.message || 'Ошибка сервера' });
+  }
 };
 
 module.exports = { createCatalogOrder, createCustomOrder, getUserOrders, cancelOrder };

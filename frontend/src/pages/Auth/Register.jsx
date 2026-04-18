@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Container, Typography, TextField, Button, Box, Alert, InputAdornment, IconButton } from '@mui/material';
-import PrintIcon from '@mui/icons-material/Print';
+import {
+  TextField, Button, Box, Alert, InputAdornment, IconButton,
+} from '@mui/material';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import useAuthStore from '../../store/authStore';
@@ -24,19 +25,55 @@ export default function Register() {
 
   return (
     <div className={styles.page}>
-      <Container maxWidth="xs">
-        <div className={styles.card}>
-          <Box sx={{ textAlign: 'center', mb: 4 }}>
-            <PrintIcon sx={{ fontSize: 40, color: 'primary.main', mb: 1 }} />
-            <Typography variant="h5" fontWeight={700}>Создать аккаунт</Typography>
-            <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>Присоединяйтесь к Print3D</Typography>
-          </Box>
+      <aside className={styles.left}>
+        <Link to="/" className={styles.brand}>
+          print3d<span className={styles.brandAccent}>.</span>
+        </Link>
 
-          {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
+        <div className={styles.quote}>
+          Присоединяйтесь<br />
+          к <span className={styles.quoteItalic}>студии</span>.
+        </div>
 
-          <Box component="form" onSubmit={handleSubmit} sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-            <TextField label="Имя" fullWidth value={form.name} onChange={set('name')} required autoComplete="name" />
-            <TextField label="Email" type="email" fullWidth value={form.email} onChange={set('email')} required autoComplete="email" />
+        <div className={styles.leftMeta}>
+          <span>Студия 3D-печати · Москва · С 2019</span>
+          <span>00 / 02</span>
+        </div>
+      </aside>
+
+      <main className={styles.right}>
+        <div className={styles.topRight}>
+          Уже есть аккаунт? <Link to="/login">Войти →</Link>
+        </div>
+
+        <div className={styles.formWrap}>
+          <div className={styles.formNum}>02 / Регистрация</div>
+          <h1 className={styles.formTitle}>Создать аккаунт</h1>
+          <p className={styles.formSub}>
+            Регистрация занимает минуту. Вы получите доступ к&nbsp;истории заказов
+            и&nbsp;отслеживанию статусов.
+          </p>
+
+          {error && <Alert severity="error" sx={{ mb: 3 }}>{error}</Alert>}
+
+          <Box component="form" onSubmit={handleSubmit} className={styles.form}>
+            <TextField
+              label="Имя"
+              fullWidth
+              value={form.name}
+              onChange={set('name')}
+              required
+              autoComplete="name"
+            />
+            <TextField
+              label="Email"
+              type="email"
+              fullWidth
+              value={form.email}
+              onChange={set('email')}
+              required
+              autoComplete="email"
+            />
             <TextField
               label="Пароль"
               type={showPwd ? 'text' : 'password'}
@@ -56,19 +93,26 @@ export default function Register() {
                 ),
               }}
             />
-            <Button type="submit" variant="contained" size="large" disabled={loading} fullWidth sx={{ mt: 1 }}>
-              {loading ? 'Регистрация...' : 'Создать аккаунт'}
+            <Button
+              type="submit"
+              variant="contained"
+              size="large"
+              disabled={loading}
+              fullWidth
+              sx={{ mt: 1 }}
+            >
+              {loading ? 'Регистрация…' : 'Создать аккаунт →'}
             </Button>
           </Box>
 
           <div className={styles.divider}>или</div>
 
-          <Typography variant="body2" textAlign="center" color="text.secondary">
+          <div className={styles.switcher}>
             Уже есть аккаунт?{' '}
-            <Link to="/login" style={{ color: '#00e5ff', fontWeight: 600 }}>Войти</Link>
-          </Typography>
+            <Link to="/login">Войти</Link>
+          </div>
         </div>
-      </Container>
+      </main>
     </div>
   );
 }

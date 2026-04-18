@@ -60,4 +60,26 @@ const getMe = (req, res) => {
   res.json(user);
 };
 
-module.exports = { register, login, getMe };
+const updateMe = (req, res) => {
+  const { name, email } = req.body;
+  if (!name || !email) return res.status(400).json({ error: 'Имя и email обязательны' });
+  const trimmedName = String(name).trim();
+  const trimmedEmail = String(email).trim().toLowerCase();
+  if (!trimmedName) return res.status(400).json({ error: 'Имя не может быть пустым' });
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail))
+    return res.status(400).json({ error: 'Некорректный email' });
+  try {
+    const clash = db.prepare('SELECT id FROM users WHERE email=? AND id<>?').get(trimmedEmail, req.user.id);
+    if (clash) return res.status(409).json({ error: 'Email уже занят' });
+    db.prepare('UPDATE users SET name=?, email=? WHERE id=?').run(trimmedName, trimmedEmail, req.user.id);
+    const user = db.prepare(
+      'SELECT id, name, email, role, created_at FROM users WHERE id=?'
+    ).get(req.user.id);
+    res.json({ token: generateToken(user), user });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Ошибка сервера' });
+  }
+};
+
+module.exports = { register, login, getMe, updateMe };

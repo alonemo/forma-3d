@@ -1,36 +1,619 @@
-.hero {
-  padding: 120px 0 48px;
+.page {
+  padding: 0 0 100px;
 }
+
+.container {
+  max-width: 1360px;
+  margin: 0 auto;
+  padding: 0 40px;
+}
+
+/* ─────── Layout ─────── */
+
+.layout {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 56px;
+  padding: 40px 0 0;
+}
+
+.main {
+  min-width: 0;
+}
+
+/* ─────── Sidebar ─────── */
+
+.nav {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-top: 8px;
+}
+
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-weight: 500;
+}
+
+.navList {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 0;
+  margin: 0;
+}
+
+.navBtn {
+  width: 100%;
+  text-align: left;
+  padding: 12px 14px;
+  border-radius: var(--r-sm);
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  font-family: var(--font-sans);
+  font-size: 14px;
+  color: var(--ink-soft);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: background 0.15s, color 0.15s;
+}
+
+.navBtn:hover {
+  background: var(--bg-2);
+  color: var(--ink);
+}
+
+.navBtnActive {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.navBtnActive:hover {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.navBadge {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: var(--bg-3);
+  color: var(--ink-soft);
+  letter-spacing: 0.05em;
+}
+
+.navBtnActive .navBadge {
+  background: var(--paper);
+  color: var(--ink);
+}
+
+.navLogout {
+  width: 100%;
+  text-align: left;
+  padding: 12px 14px;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  font-family: var(--font-sans);
+  font-size: 14px;
+  color: var(--muted);
+  transition: color 0.15s;
+}
+
+.navLogout:hover {
+  color: var(--error);
+}
+
+/* ─────── Account header ─────── */
+
+.header {
+  display: grid;
+  grid-template-columns: 80px 1fr auto;
+  gap: 20px;
+  align-items: center;
+  padding-bottom: 28px;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 40px;
+}
+
+.avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--terracotta), var(--ochre));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-serif);
+  font-size: 36px;
+  color: var(--paper);
+  letter-spacing: -0.01em;
+}
+
+.name {
+  font-family: var(--font-serif);
+  font-size: 36px;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  line-height: 1;
+}
+
+.email {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--muted);
+  letter-spacing: 0.05em;
+  margin-top: 6px;
+}
+
+/* ─────── Stat row ─────── */
+
+.statRow {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--line);
+  border: 1px solid var(--line);
+  margin-bottom: 48px;
+}
+
+.statCell {
+  background: var(--bg);
+  padding: 24px;
+}
+
+.statKey {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+
+.statValue {
+  font-family: var(--font-serif);
+  font-size: 42px;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  color: var(--ink);
+}
+
+.statValue em {
+  font-family: var(--font-mono);
+  font-size: 16px;
+  color: var(--muted);
+  margin-left: 6px;
+  font-style: normal;
+  letter-spacing: 0;
+}
+
+/* ─────── Tab title ─────── */
+
+.tabTitle {
+  font-family: var(--font-serif);
+  font-size: 36px;
+  margin-bottom: 24px;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  font-weight: 400;
+}
+
+/* ─────── Order card ─────── */
 
 .orderCard {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  padding: 28px;
+  margin-bottom: 20px;
+  opacity: 0;
+  transform: translateY(16px);
+  animation: forma-profile-reveal 0.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes forma-profile-reveal {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes forma-profile-pulse {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.3; }
+}
+
+.orderHead {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 20px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--line-soft);
+  gap: 16px;
+}
+
+.orderId {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  color: var(--ink);
+}
+
+.orderDate {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--muted);
+  letter-spacing: 0.05em;
+  margin-top: 4px;
+}
+
+/* ─────── Status badge ─────── */
+
+.statusBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.statusDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.statusPrinting {
+  background: rgba(184, 92, 60, 0.12);
+  color: var(--terracotta-dark);
+}
+
+.statusPrinting .statusDot {
+  background: var(--terracotta);
+  animation: forma-profile-pulse 1.6s ease-in-out infinite;
+}
+
+.statusQueued {
+  background: rgba(138, 120, 98, 0.15);
+  color: var(--ink-soft);
+}
+
+.statusQueued .statusDot {
+  background: var(--muted);
+}
+
+.statusReady {
+  background: rgba(94, 122, 62, 0.12);
+  color: var(--success);
+}
+
+.statusReady .statusDot {
+  background: var(--success);
+}
+
+.statusCancelled {
+  background: rgba(154, 40, 32, 0.08);
+  color: var(--error);
+}
+
+.statusCancelled .statusDot {
+  background: var(--error);
+}
+
+/* ─────── Order items ─────── */
+
+.orderItems {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.orderItem {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.orderThumb {
+  width: 72px;
+  height: 72px;
+  background: var(--bg-3);
+  border-radius: var(--r-sm);
+  position: relative;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.orderThumbQty {
+  position: absolute;
+  bottom: 4px;
+  right: 4px;
+  background: var(--ink);
+  color: var(--paper);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  padding: 2px 5px;
+  border-radius: var(--r-sm);
+  letter-spacing: 0.05em;
+  z-index: 4;
+}
+
+.orderItemName {
+  font-family: var(--font-serif);
+  font-size: 17px;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  line-height: 1.2;
+}
+
+.orderItemMeta {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-top: 4px;
+}
+
+/* Custom order body */
+
+.customOrderBody {
+  padding: 8px 0 20px;
+}
+
+.customOrderLabel {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--terracotta);
+  margin-bottom: 8px;
+}
+
+.customOrderText {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  color: var(--ink-soft);
+  line-height: 1.55;
+}
+
+/* ─────── Print progress ─────── */
+
+.printProgress {
+  background: var(--bg-2);
+  border-radius: var(--r-sm);
   padding: 20px;
-  border-radius: 14px;
-  background: rgba(255,255,255,0.02);
-  border: 1px solid rgba(255,255,255,0.07);
-  margin-bottom: 16px;
-  transition: border-color 0.2s;
+  margin-bottom: 4px;
 }
 
-.orderCard:hover {
-  border-color: rgba(0,229,255,0.12);
+.progressHead {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+  gap: 16px;
 }
 
-.statusChip {
-  border-radius: 6px !important;
+.progressStage {
+  color: var(--terracotta-dark);
 }
+
+.progressStageMuted {
+  color: var(--muted);
+}
+
+.progressEta {
+  color: var(--muted);
+}
+
+.progressTrack {
+  height: 6px;
+  background: var(--bg-3);
+  border-radius: 3px;
+  overflow: hidden;
+  position: relative;
+  margin-bottom: 10px;
+}
+
+.progressFill {
+  height: 100%;
+  background: var(--terracotta);
+  border-radius: 3px;
+  transition: width 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+  position: relative;
+}
+
+.progressFill::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 30px;
+  background: linear-gradient(90deg, transparent, rgba(247, 241, 230, 0.5));
+}
+
+.progressFillMuted {
+  background: var(--muted);
+}
+
+.progressMeta {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--muted);
+  letter-spacing: 0.05em;
+  gap: 16px;
+}
+
+.mono {
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ─────── Order foot ─────── */
+
+.orderFoot {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid var(--line-soft);
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.orderTotal {
+  display: flex;
+  gap: 10px;
+  align-items: baseline;
+  font-family: var(--font-mono);
+  font-size: 18px;
+  color: var(--ink);
+}
+
+.orderTotalKey {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.cancelReason {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  color: var(--error);
+  background: rgba(154, 40, 32, 0.06);
+  padding: 8px 12px;
+  border-radius: var(--r-sm);
+  margin-bottom: 12px;
+  border-left: 3px solid var(--error);
+}
+
+/* ─────── Empty state ─────── */
 
 .empty {
+  padding: 60px 20px;
   text-align: center;
-  padding: 60px 0;
-  color: #9090a8;
+  color: var(--muted);
+  border: 1px solid var(--line-soft);
+  border-radius: var(--r-md);
+  background: var(--paper);
 }
 
-@media (max-width: 899px) {
-  .hero { padding: 90px 0 32px; }
+.empty h3 {
+  font-family: var(--font-serif);
+  font-size: 28px;
+  color: var(--ink);
+  margin-bottom: 10px;
+  font-weight: 400;
+  letter-spacing: -0.02em;
 }
 
-@media (max-width: 599px) {
-  .hero { padding: 80px 0 24px; }
-  .orderCard { padding: 14px; }
-  .empty { padding: 40px 0; }
+.empty p {
+  font-size: 14px;
+  color: var(--muted);
+  line-height: 1.55;
+  max-width: 380px;
+  margin: 0 auto;
+}
+
+/* ─────── Addresses + Profile tabs ─────── */
+
+.addressName {
+  font-family: var(--font-serif);
+  font-size: 24px;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  margin-bottom: 6px;
+}
+
+.addressText {
+  font-family: var(--font-sans);
+  color: var(--ink-soft);
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.addressPhone {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 10px;
+  letter-spacing: 0.05em;
+}
+
+.profileRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--line-soft);
+  font-family: var(--font-sans);
+  font-size: 14px;
+  color: var(--ink);
+}
+
+.profileRow:last-of-type {
+  border-bottom: none;
+}
+
+.profileKey {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* ─────── Reduced motion ─────── */
+
+@media (prefers-reduced-motion: reduce) {
+  .orderCard { opacity: 1; transform: none; animation: none; }
+  .statusPrinting .statusDot { animation: none !important; }
+  .progressFill { transition: none !important; }
+}
+
+/* ─────── Responsive ─────── */
+
+@media (max-width: 960px) {
+  .layout { grid-template-columns: 1fr; gap: 24px; padding-top: 24px; }
+  .nav { flex-direction: row; gap: 8px; overflow-x: auto; padding-bottom: 8px; padding-top: 0; }
+  .navList { flex-direction: row; gap: 4px; flex: 1; }
+  .navBtn { white-space: nowrap; }
+  .eyebrow { display: none; }
+
+  .header { grid-template-columns: 64px 1fr; gap: 16px; }
+  .header > :last-child { grid-column: 1 / -1; justify-self: flex-start; }
+  .avatar { width: 64px; height: 64px; font-size: 28px; }
+  .name { font-size: 28px; }
+
+  .statRow { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 720px) {
+  .container { padding: 0 20px; }
+  .orderCard { padding: 20px; }
+  .orderHead { flex-direction: column; }
+  .statusBadge { align-self: flex-start; }
 }

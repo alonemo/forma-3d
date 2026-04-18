@@ -20,7 +20,7 @@ export default function PageLoader() {
 
   return (
     <div style={{
-      position: 'fixed', top: 0, left: 0, right: 0, height: 3, zIndex: 9999,
+      position: 'fixed', top: 0, left: 0, right: 0, height: 2, zIndex: 9999,
       pointerEvents: 'none',
       opacity: visible ? 1 : 0,
       transition: 'opacity 0.3s ease',
@@ -28,10 +28,8 @@ export default function PageLoader() {
       <div style={{
         height: '100%',
         width: `${progress}%`,
-        background: 'linear-gradient(90deg, #00e5ff, #7c4dff)',
-        boxShadow: '0 0 10px rgba(0,229,255,0.7)',
+        background: '#1a1814',
         transition: progress === 0 ? 'none' : 'width 0.4s ease',
-        borderRadius: '0 2px 2px 0',
       }} />
     </div>
   );

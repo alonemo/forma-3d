@@ -1,92 +1,302 @@
+.page {
+  padding-top: 72px;
+}
+
+/* ─── Hero ─── */
 .hero {
-  padding: 140px 0 80px;
-  position: relative;
-  overflow: hidden;
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 96px 40px 80px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 64px;
+  align-items: end;
+  border-bottom: 1px solid var(--rule);
 }
 
-.heroBg {
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(ellipse 60% 50% at 30% 20%, rgba(124,77,255,0.08) 0%, transparent 60%);
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--text-2);
+  margin-bottom: 32px;
 }
 
-.teamCard {
-  padding: 28px;
-  border-radius: 16px;
-  background: rgba(255,255,255,0.02);
-  border: 1px solid rgba(255,255,255,0.07);
-  text-align: center;
-  transition: transform 0.3s, box-shadow 0.3s;
-  height: 100%;
+.heroTitle {
+  font-family: var(--font-serif);
+  font-size: clamp(3rem, 8.5vw, 7.2rem);
+  letter-spacing: -0.035em;
+  line-height: 0.9;
+  color: var(--text);
+  font-weight: 400;
 }
 
-.teamCard:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 20px 50px rgba(124,77,255,0.1);
-  border-color: rgba(124,77,255,0.2);
+.heroTitleItalic {
+  font-style: italic;
+  color: var(--accent);
 }
 
-.avatar {
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
+.heroLede {
+  font-size: 1.05rem;
+  line-height: 1.7;
+  color: var(--text);
+  max-width: 440px;
+}
+
+.heroLede .muted {
+  color: var(--text-2);
+  margin-top: 16px;
+  font-size: 0.95rem;
+}
+
+/* ─── Section frame ─── */
+.section {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 120px 40px;
+}
+
+.sectionAltWrap {
+  background: var(--surface);
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+}
+
+.sectionHead {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 48px;
+  align-items: start;
+  padding-bottom: 24px;
+  margin-bottom: 56px;
+  border-bottom: 1px solid var(--rule);
+}
+
+.sectionNum {
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--text-2);
+  padding-top: 14px;
+}
+
+.sectionTitle {
+  font-family: var(--font-serif);
+  font-size: clamp(2.4rem, 6vw, 4.8rem);
+  letter-spacing: -0.03em;
+  line-height: 0.98;
+  color: var(--text);
+}
+
+.sectionLead {
+  margin-top: 16px;
+  color: var(--text-2);
+  font-size: 1rem;
+  line-height: 1.65;
+  max-width: 520px;
+}
+
+/* ─── Values ─── */
+
+.valuesList {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0;
+  border-top: 1px solid var(--rule);
+}
+
+.valueItem {
+  padding: 40px 32px 40px 0;
+  border-bottom: 1px solid var(--rule);
   display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 2rem;
-  margin: 0 auto 16px;
+  flex-direction: column;
+  gap: 14px;
 }
 
-.valueCard {
-  display: flex;
-  gap: 16px;
-  padding: 24px;
-  border-radius: 14px;
-  background: rgba(255,255,255,0.02);
-  border: 1px solid rgba(255,255,255,0.06);
-  transition: border-color 0.3s;
+.valueItem:nth-child(odd) {
+  border-right: 1px solid var(--rule);
+  padding-right: 32px;
 }
 
-.valueCard:hover {
-  border-color: rgba(0,229,255,0.15);
-}
-
-.timeline {
-  position: relative;
+.valueItem:nth-child(even) {
   padding-left: 32px;
 }
 
-.timeline::before {
-  content: '';
-  position: absolute;
-  left: 9px;
-  top: 8px;
-  bottom: 8px;
-  width: 2px;
-  background: linear-gradient(180deg, #00e5ff, #7c4dff, transparent);
+.valueNum {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  color: var(--accent);
+}
+
+.valueTitle {
+  font-family: var(--font-serif);
+  font-size: 2.2rem;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+.valueDesc {
+  color: var(--text-2);
+  font-size: 0.96rem;
+  line-height: 1.6;
+  max-width: 440px;
+}
+
+/* ─── Team ─── */
+
+.teamList {
+  border-top: 1px solid var(--rule);
+}
+
+.teamRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr 2fr 1fr;
+  gap: 32px;
+  padding: 32px 0;
+  border-bottom: 1px solid var(--rule);
+  align-items: baseline;
+}
+
+.teamNum {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.14em;
+  color: var(--text-2);
+}
+
+.teamName {
+  font-family: var(--font-serif);
+  font-size: 1.7rem;
+  letter-spacing: -0.015em;
+  color: var(--text);
+  line-height: 1.1;
+}
+
+.teamRole {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-2);
+  margin-top: 6px;
+}
+
+.teamDesc {
+  font-size: 0.94rem;
+  color: var(--text-2);
+  line-height: 1.55;
+}
+
+.teamSince {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  color: var(--text-2);
+  text-align: right;
+}
+
+/* ─── History ─── */
+
+.timelineGrid {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 80px;
+  align-items: start;
+}
+
+.timelineIntro {
+  position: sticky;
+  top: 88px;
+}
+
+.timelineIntroText {
+  font-size: 1rem;
+  color: var(--text);
+  line-height: 1.7;
+  max-width: 360px;
+}
+
+.timeline {
+  display: flex;
+  flex-direction: column;
 }
 
 .timelineItem {
-  position: relative;
-  margin-bottom: 28px;
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  gap: 32px;
+  padding: 24px 0;
+  border-bottom: 1px solid var(--rule);
+  align-items: baseline;
 }
 
-.timelineItem::before {
-  content: '';
-  position: absolute;
-  left: -27px;
-  top: 6px;
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: #00e5ff;
-  box-shadow: 0 0 8px rgba(0,229,255,0.5);
+.timelineYear {
+  font-family: var(--font-serif);
+  font-size: 2.4rem;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  color: var(--text);
+  font-style: italic;
+}
+
+.timelineText {
+  color: var(--text-2);
+  font-size: 0.95rem;
+  line-height: 1.6;
+  max-width: 560px;
+}
+
+/* ─── Contacts ─── */
+
+.contacts {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+}
+
+.contactItem {
+  padding: 28px 24px;
+  border-right: 1px solid var(--rule);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.contactItem:last-child { border-right: 0; }
+
+.contactKey {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-2);
+}
+
+.contactValue {
+  font-family: var(--font-serif);
+  font-size: 1.4rem;
+  letter-spacing: -0.015em;
+  color: var(--text);
+  line-height: 1.2;
+}
+
+.contactValueSmall {
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  color: var(--text);
+  font-weight: 500;
+  letter-spacing: 0;
 }
 
 .observeEl {
   opacity: 0;
   transform: translateY(24px);
-  transition: opacity 0.6s ease, transform 0.6s ease;
+  transition: opacity 0.7s ease, transform 0.7s ease;
 }
 
 .observeEl.visible {
@@ -94,14 +304,30 @@
   transform: translateY(0);
 }
 
-@media (max-width: 899px) {
-  .hero { padding: 90px 0 48px; }
-  .teamCard { padding: 20px; }
+@media (max-width: 1023px) {
+  .hero { grid-template-columns: 1fr; gap: 32px; }
+  .contacts { grid-template-columns: 1fr 1fr; }
+  .contactItem:nth-child(2) { border-right: 0; }
+  .contactItem:nth-child(1), .contactItem:nth-child(2) { border-bottom: 1px solid var(--rule); }
 }
 
-@media (max-width: 599px) {
-  .hero { padding: 80px 0 32px; }
-  .teamCard { padding: 16px; }
-  .valueCard { padding: 16px; gap: 12px; }
-  .infoCard { padding: 16px; }
+@media (max-width: 899px) {
+  .page { padding-top: 64px; }
+  .hero { padding: 56px 24px 40px; }
+  .section { padding: 64px 24px; }
+  .sectionHead { grid-template-columns: 1fr; gap: 16px; margin-bottom: 32px; }
+  .sectionNum { padding-top: 0; }
+  .valuesList { grid-template-columns: 1fr; }
+  .valueItem:nth-child(odd) { border-right: 0; padding-right: 0; }
+  .valueItem:nth-child(even) { padding-left: 0; }
+  .teamRow { grid-template-columns: 40px 1fr; gap: 16px; }
+  .teamRow > :nth-child(3) { grid-column: 1 / -1; }
+  .teamRow > :nth-child(4) { grid-column: 1 / -1; text-align: left; }
+  .timelineGrid { grid-template-columns: 1fr; gap: 24px; }
+  .timelineIntro { position: static; }
+  .timelineItem { grid-template-columns: 80px 1fr; gap: 20px; }
+  .timelineYear { font-size: 1.8rem; }
+  .contacts { grid-template-columns: 1fr; }
+  .contactItem { border-right: 0; border-bottom: 1px solid var(--rule); }
+  .contactItem:last-child { border-bottom: 0; }
 }

@@ -1,239 +1,304 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Container, Grid, Typography, Button, Box, Chip } from '@mui/material';
-import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import { Button } from '@mui/material';
+import { getProductsApi } from '../../api/products';
+import ProductCard from '../../components/ProductCard/ProductCard';
 import styles from './Home.module.css';
 
-const PARTICLES = Array.from({ length: 18 }, (_, i) => ({
-  id: i,
-  size: Math.random() * 6 + 2,
-  left: Math.random() * 100,
-  delay: Math.random() * 12,
-  duration: Math.random() * 12 + 10,
-}));
-
-const FEATURES = [
-  { icon: '⚡', color: '#00e5ff', bg: 'rgba(0,229,255,0.1)', title: 'Быстрое изготовление', desc: 'Стандартные изделия готовы за 1–3 дня. Сложные модели — до 7 дней с момента согласования.' },
-  { icon: '🎯', color: '#7c4dff', bg: 'rgba(124,77,255,0.1)', title: 'Точность до 0.1 мм', desc: 'Используем профессиональное оборудование FDM и SLA классов, обеспечивая высокую точность деталей.' },
-  { icon: '🌈', color: '#ff6d00', bg: 'rgba(255,109,0,0.1)', title: 'Более 40 материалов', desc: 'PLA, PETG, ABS, TPU, Nylon, фотополимеры и специальные смеси для любых задач.' },
-  { icon: '🔧', color: '#00e676', bg: 'rgba(0,230,118,0.1)', title: 'Постобработка', desc: 'Шлифовка, покраска, склейка, гальваника — доведём изделие до готового продукта.' },
-  { icon: '💡', color: '#ffab40', bg: 'rgba(255,171,64,0.1)', title: 'Консультация', desc: 'Поможем выбрать материал и технологию под вашу задачу. Бесплатно.' },
-  { icon: '📦', color: '#e040fb', bg: 'rgba(224,64,251,0.1)', title: 'Доставка по России', desc: 'СДЭК, Почта России, курьер по Москве. Упаковка исключает повреждения.' },
+const HERO_META = [
+  { label: 'Принтеров',       value: '8 станков' },
+  { label: 'Работ выполнено', value: '3 412' },
+  { label: 'Средний срок',    value: '4–7 дней' },
 ];
 
-const STEPS = [
-  { n: '01', title: 'Оставьте заявку', desc: 'Опишите идею или прикрепите ссылку на референс. Заполните форму на сайте — это займёт 2 минуты.' },
-  { n: '02', title: 'Согласование', desc: 'Наш менеджер свяжется с вами в течение часа, уточнит детали и рассчитает стоимость.' },
-  { n: '03', title: 'Производство', desc: 'Запускаем печать после предоплаты. Отправляем фото промежуточного результата.' },
-  { n: '04', title: 'Получение', desc: 'Заберите сами или закажите доставку. Гарантия качества на каждое изделие.' },
+const TICKER = [
+  ['PLA из кукурузы', false],
+  ['фотополимерная смола 25 мкм', true],
+  ['филамент с древесным волокном', false],
+  ['PETG — прочный и пищевой', true],
+  ['ручная пост-обработка', false],
+  ['печать по вашим моделям', true],
 ];
 
-const MATERIALS = [
-  { name: 'PLA', emoji: '🌿', color: '#00e5ff', desc: 'Экологичный, лёгкий в печати, отличная детализация' },
-  { name: 'PETG', emoji: '💎', color: '#7c4dff', desc: 'Прочный, гибкий, устойчив к температурам' },
-  { name: 'ABS', emoji: '🔩', color: '#ff6d00', desc: 'Термостойкий, подходит для механических деталей' },
-  { name: 'Resin', emoji: '✨', color: '#e040fb', desc: 'Максимальная детализация для фигурок и прототипов' },
+const PROCESS = [
+  { n: '01', tag: 'Выбор',       title: 'Модель и цвет',   desc: 'Выберите готовое изделие в каталоге или загрузите свой STL. 6 цветов, 4 материала в наличии.' },
+  { n: '02', tag: 'Печать',      title: 'На одном станке', desc: 'Каждый заказ — это конкретный принтер и конкретная катушка. Вы видите статус в реальном времени.' },
+  { n: '03', tag: 'Обработка',   title: 'Руки мастера',    desc: 'Удаление опор, шлифовка кромок, при необходимости — грунтовка и покраска акрилом.' },
+  { n: '04', tag: 'Доставка',    title: '3–7 дней',        desc: 'СДЭК, Почта России, курьер по Москве. Упаковываем в крафт с деревянной стружкой.' },
 ];
+
+const TOTAL_LAYERS = 960;
+const START_LAYER = 614;
+
+function HeroVisual() {
+  const layers = 58;
+  const layerHeight = 2.6;
+  const [tick, setTick] = useState(0);
+
+  useEffect(() => {
+    const t = setInterval(() => setTick((x) => x + 1), 1800);
+    return () => clearInterval(t);
+  }, []);
+
+  // cycles layer count between START_LAYER and TOTAL_LAYERS−2, then wraps
+  const span = TOTAL_LAYERS - 2 - START_LAYER;
+  const layerNow = START_LAYER + (tick * 2) % Math.max(span, 1);
+  const percent = ((layerNow / TOTAL_LAYERS) * 100).toFixed(1);
+
+  return (
+    <div className={styles.heroVisual}>
+      <div className={styles.visualOverlay}>
+        <span><span className={styles.visualDot} />ПЕЧАТАЕТСЯ СЕЙЧАС</span>
+        <span>FM-001 · PLA · 0.2 MM</span>
+      </div>
+      <div className={styles.printerViz}>
+        <div className={styles.printerStage}>
+          <div className={styles.printerGantry} />
+          <div className={styles.printheadRail} />
+          <div className={styles.printhead} />
+          <div className={styles.vase}>
+            {Array.from({ length: layers }).map((_, i) => {
+              const t = i / (layers - 1);
+              const curve = 0.55 + Math.sin(t * Math.PI * 0.95) * 0.4 + Math.sin(t * Math.PI * 2.4) * 0.06;
+              const w = 60 + curve * 110;
+              return (
+                <div
+                  key={i}
+                  className={styles.vaseLayer}
+                  style={{
+                    bottom: `${i * layerHeight}px`,
+                    width: `${w}px`,
+                    opacity: 0.96 - (i % 2) * 0.08,
+                    animationDelay: `${i * 0.04}s`,
+                  }}
+                />
+              );
+            })}
+          </div>
+          <div className={styles.printerBase} />
+        </div>
+      </div>
+      <div className={styles.visualCaption}>
+        <span>Ваза «Слой» №73</span>
+        <span>
+          <span className={styles.visualCaptionLive}>
+            {percent}%
+            <span className={styles.visualCaret}>_</span>
+          </span>
+          {' · '}
+          {layerNow}/{TOTAL_LAYERS} слоёв
+        </span>
+      </div>
+    </div>
+  );
+}
+
+// Reveal-on-scroll hook. Re-observes across observer recreation so that
+// StrictMode's double-mount doesn't leave elements stuck at opacity 0.
+function useReveal() {
+  const observerRef = useRef(null);
+  const targetsRef = useRef(new Set());
+
+  useEffect(() => {
+    const obs = new IntersectionObserver(
+      (entries) => entries.forEach((e) => {
+        if (e.isIntersecting) {
+          e.target.classList.add(styles.visible);
+          obs.unobserve(e.target);
+          targetsRef.current.delete(e.target);
+        }
+      }),
+      { threshold: 0.12, rootMargin: '0px 0px -40px 0px' }
+    );
+    observerRef.current = obs;
+    targetsRef.current.forEach((el) => obs.observe(el));
+    return () => {
+      obs.disconnect();
+      observerRef.current = null;
+    };
+  }, []);
+
+  return (el) => {
+    if (!el || targetsRef.current.has(el)) return;
+    if (el.classList.contains(styles.visible)) return;
+    targetsRef.current.add(el);
+    if (observerRef.current) observerRef.current.observe(el);
+  };
+}
 
 export default function Home() {
   const navigate = useNavigate();
-  const observeRefs = useRef([]);
+  const [products, setProducts] = useState([]);
+  const addRef = useReveal();
 
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => entries.forEach((e) => { if (e.isIntersecting) e.target.classList.add(styles.visible); }),
-      { threshold: 0.15 }
-    );
-    observeRefs.current.forEach((el) => el && observer.observe(el));
-    return () => observer.disconnect();
+    getProductsApi({ limit: 8 })
+      .then((r) => setProducts(Array.isArray(r.data) ? r.data : (r.data?.items || [])))
+      .catch(() => setProducts([]));
   }, []);
 
-  const addObserveRef = (el) => {
-    if (el && !observeRefs.current.includes(el)) observeRefs.current.push(el);
-  };
+  const bestsellers = products.slice(0, 4);
+  const newInWorkshop = products.slice(4, 8);
+
+  const openProduct = (p) => navigate(`/catalog/${p.id}`);
 
   return (
-    <div>
-      {/* ─── HERO ─── */}
+    <>
+      {/* ───────────── HERO ───────────── */}
       <section className={styles.hero}>
-        <div className={styles.heroBg} />
-        <div className={styles.particles}>
-          {PARTICLES.map((p) => (
-            <div key={p.id} className={styles.particle} style={{
-              width: p.size, height: p.size,
-              left: `${p.left}%`,
-              animationDelay: `${p.delay}s`,
-              animationDuration: `${p.duration}s`,
-            }} />
+        <div className={styles.container}>
+          <div className={styles.heroLayout}>
+            <div className={styles.heroContent}>
+              <div className="eyebrow" style={{ marginBottom: 32 }}>
+                ↳ Студия 3D-печати · Москва · с 2019
+              </div>
+              <h1 className={styles.heroTitle}>
+                Вещи, собранные<br />
+                <em>слой за&nbsp;слоем</em>,<br />
+                руками мастера.
+              </h1>
+              <p className={styles.heroDescription}>
+                ФОРМА — небольшая мастерская. Каждое изделие проходит
+                через конкретный принтер, конкретную катушку и&nbsp;руки
+                мастера — от&nbsp;первой линии до&nbsp;финальной шлифовки.
+              </p>
+              <div className={styles.heroCta}>
+                <Button
+                  variant="contained"
+                  size="large"
+                  onClick={() => navigate('/catalog')}
+                >
+                  Смотреть каталог →
+                </Button>
+                <Button
+                  variant="outlined"
+                  size="large"
+                  onClick={() => navigate('/order')}
+                >
+                  Заказать изделие
+                </Button>
+              </div>
+            </div>
+            <HeroVisual />
+          </div>
+          <div className={styles.heroMetaRow}>
+            <div className={styles.heroMeta}>
+              {HERO_META.map((m) => (
+                <div key={m.label}>
+                  <div className={styles.heroMetaLabel}>{m.label}</div>
+                  <div className={styles.heroMetaValue}>{m.value}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ───────────── TICKER ───────────── */}
+      <div className={styles.ticker}>
+        <div className={styles.tickerTrack}>
+          {[0, 1].map((k) => (
+            <React.Fragment key={k}>
+              {TICKER.map(([text, emph], i) => (
+                <React.Fragment key={`${k}-${i}`}>
+                  <span className={styles.tickerItem}>
+                    {emph ? <em>{text}</em> : text}
+                  </span>
+                  <span className={styles.tickerSep}>◆</span>
+                </React.Fragment>
+              ))}
+            </React.Fragment>
           ))}
         </div>
+      </div>
 
-        <Container maxWidth="lg" sx={{ position: 'relative', zIndex: 2 }}>
-          <Grid container spacing={4} alignItems="center">
-            <Grid item xs={12} md={7}>
-              <div className={styles.heroContent}>
-                <div className={styles.heroTag}>
-                  <span className={styles.heroTagDot} />
-                  Профессиональная 3D-печать
-                </div>
-
-                <Typography
-                  variant="h1"
-                  className={styles.heroTitle}
-                  sx={{ mb: 3, fontSize: { xs: 'clamp(2rem, 9vw, 2.6rem)', sm: 'clamp(2.4rem, 5vw, 3.6rem)', md: 'clamp(2.8rem, 5vw, 5rem)' } }}
-                >
-                  Воплощаем<br />
-                  <span className={styles.gradientText}>идеи в реальность</span>
-                </Typography>
-
-                <Typography className={styles.heroSub} sx={{ mb: 4 }}>
-                  Изготовим любое изделие по вашему заказу: прототипы, декор, запчасти,
-                  подарки. Точность до 0.1 мм, более 40 материалов.
-                </Typography>
-
-                <div className={styles.heroActions} style={{ marginBottom: 48 }}>
-                  <Button
-                    variant="contained"
-                    size="large"
-                    endIcon={<ArrowForwardIcon />}
-                    onClick={() => navigate('/order')}
-                    sx={{ fontSize: '1rem', px: 4, py: 1.5 }}
-                  >
-                    Заказать изделие
-                  </Button>
-                  <Button
-                    variant="outlined"
-                    size="large"
-                    onClick={() => navigate('/catalog')}
-                    sx={{ fontSize: '1rem', px: 4, py: 1.5, borderColor: 'rgba(255,255,255,0.15)', color: '#e8e8f0', '&:hover': { borderColor: '#00e5ff', color: '#00e5ff', background: 'rgba(0,229,255,0.05)' } }}
-                  >
-                    Смотреть каталог
-                  </Button>
-                </div>
-
-                <div className={styles.stats}>
-                  {[['500+', 'Выполненных заказов'], ['40+', 'Материалов'], ['0.1 мм', 'Точность'], ['1–3 дня', 'Срок изготовления']].map(([n, l]) => (
-                    <div key={l} className={styles.statItem}>
-                      <div className={styles.statNum}>{n}</div>
-                      <div className={styles.statLabel}>{l}</div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </Grid>
-
-            <Grid item xs={12} md={5} sx={{ display: 'flex', justifyContent: 'center' }}>
-              <div className={styles.cubeScene}>
-                <div className={styles.cubeGlow} />
-                <div className={styles.cube}>
-                  <div className={`${styles.cubeFace} ${styles.front}`}>🖨️</div>
-                  <div className={`${styles.cubeFace} ${styles.back}`}>⚙️</div>
-                  <div className={`${styles.cubeFace} ${styles.left}`}>🎯</div>
-                  <div className={`${styles.cubeFace} ${styles.right}`}>💎</div>
-                  <div className={`${styles.cubeFace} ${styles.top}`}>🌟</div>
-                  <div className={`${styles.cubeFace} ${styles.bottom}`}>🚀</div>
-                </div>
-              </div>
-            </Grid>
-          </Grid>
-        </Container>
-      </section>
-
-      {/* ─── FEATURES ─── */}
-      <section className={styles.features}>
-        <Container maxWidth="lg">
-          <Box ref={addObserveRef} className={styles.observeEl} sx={{ mb: 6, textAlign: 'center' }}>
-            <span className={styles.sectionTag}>Почему мы</span>
-            <Typography variant="h3" fontWeight={700} gutterBottom>Наши преимущества</Typography>
-            <Typography color="text.secondary" sx={{ maxWidth: 480, mx: 'auto' }}>
-              Современное оборудование, опытная команда и полный цикл производства — от идеи до готового изделия.
-            </Typography>
-          </Box>
-
-          <Grid container spacing={3}>
-            {FEATURES.map((f, i) => (
-              <Grid item xs={12} sm={6} md={4} key={f.title}>
-                <div ref={addObserveRef} className={`${styles.observeEl} ${styles.featureCard}`} style={{ transitionDelay: `${i * 80}ms` }}>
-                  <div className={styles.featureIcon} style={{ background: f.bg, color: f.color }}>
-                    {f.icon}
-                  </div>
-                  <Typography variant="h6" fontWeight={600} gutterBottom>{f.title}</Typography>
-                  <Typography variant="body2" color="text.secondary" lineHeight={1.7}>{f.desc}</Typography>
-                </div>
-              </Grid>
-            ))}
-          </Grid>
-        </Container>
-      </section>
-
-      {/* ─── HOW IT WORKS ─── */}
-      <section className={styles.howItWorks}>
-        <Container maxWidth="lg">
-          <Box ref={addObserveRef} className={styles.observeEl} sx={{ mb: 6 }}>
-            <span className={styles.sectionTag}>Процесс</span>
-            <Typography variant="h3" fontWeight={700}>Как это работает</Typography>
-          </Box>
-
-          <Grid container spacing={4}>
-            {STEPS.map((step, i) => (
-              <Grid item xs={12} sm={6} key={step.n}>
-                <div ref={addObserveRef} className={`${styles.observeEl} ${styles.step}`} style={{ transitionDelay: `${i * 120}ms` }}>
-                  <div className={styles.stepNum}>{step.n}</div>
-                  <div>
-                    <Typography variant="h6" fontWeight={600} gutterBottom>{step.title}</Typography>
-                    <Typography variant="body2" color="text.secondary" lineHeight={1.7}>{step.desc}</Typography>
-                  </div>
-                </div>
-              </Grid>
-            ))}
-          </Grid>
-        </Container>
-      </section>
-
-      {/* ─── MATERIALS ─── */}
-      <section className={styles.materials}>
-        <Container maxWidth="lg">
-          <Box ref={addObserveRef} className={styles.observeEl} sx={{ mb: 6, textAlign: 'center' }}>
-            <span className={styles.sectionTag}>Материалы</span>
-            <Typography variant="h3" fontWeight={700}>Из чего мы печатаем</Typography>
-          </Box>
-          <Grid container spacing={3}>
-            {MATERIALS.map((m, i) => (
-              <Grid item xs={6} sm={3} key={m.name}>
-                <div ref={addObserveRef} className={`${styles.observeEl} ${styles.materialCard}`} style={{ transitionDelay: `${i * 80}ms` }}>
-                  <div style={{ fontSize: '2.5rem', marginBottom: 12 }}>{m.emoji}</div>
-                  <Typography variant="h5" fontWeight={800} sx={{ color: m.color, mb: 1 }}>{m.name}</Typography>
-                  <Typography variant="body2" color="text.secondary" fontSize="0.82rem">{m.desc}</Typography>
-                </div>
-              </Grid>
-            ))}
-          </Grid>
-        </Container>
-      </section>
-
-      {/* ─── CTA ─── */}
-      <section className={styles.cta}>
-        <div className={styles.ctaBg} />
-        <Container maxWidth="md" sx={{ position: 'relative', zIndex: 1 }}>
-          <div ref={addObserveRef} className={`${styles.observeEl} ${styles.ctaCard}`}>
-            <Typography variant="h3" fontWeight={800} gutterBottom>
-              Готовы начать?
-            </Typography>
-            <Typography color="text.secondary" sx={{ mb: 4, maxWidth: 480, mx: 'auto' }}>
-              Оставьте заявку прямо сейчас — менеджер свяжется с вами в течение часа
-              и рассчитает стоимость вашего проекта.
-            </Typography>
-            <Box sx={{ display: 'flex', gap: 2, justifyContent: 'center', flexWrap: 'wrap', position: 'relative', zIndex: 1 }}>
-              <Button variant="contained" size="large" onClick={() => navigate('/order')} sx={{ px: 5, py: 1.5, fontSize: '1rem' }}>
-                Оставить заявку
-              </Button>
-              <Button variant="outlined" size="large" onClick={() => navigate('/catalog')} sx={{ px: 5, py: 1.5, fontSize: '1rem', borderColor: 'rgba(255,255,255,0.15)', color: '#e8e8f0', '&:hover': { borderColor: '#00e5ff', color: '#00e5ff' } }}>
-                Каталог товаров
-              </Button>
-            </Box>
+      {/* ───────────── PHILOSOPHY + PROCESS ───────────── */}
+      <section className={styles.philosophy}>
+        <div className={styles.container}>
+          <div ref={addRef} className={`${styles.philosophyGrid} ${styles.observe}`}>
+            <div className={styles.philosophyLabel}>Подход</div>
+            <div className={styles.philosophyText}>
+              Мы не прячем слои печати. <em>Они и есть фактура.</em> Как гончар
+              не прячет следы пальцев на глине, мы оставляем видимыми кольца,
+              по которым сопло укладывало материал час за часом.
+            </div>
           </div>
-        </Container>
+
+          <div className={styles.process}>
+            {PROCESS.map((p, i) => (
+              <div
+                key={p.n}
+                ref={addRef}
+                className={`${styles.processStep} ${styles.observe}`}
+                style={{ animationDelay: `${i * 80}ms` }}
+              >
+                <div className={styles.processNum}>{p.n} / {p.tag}</div>
+                <h4>{p.title}</h4>
+                <p>{p.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
       </section>
-    </div>
+
+      {/* ───────────── BESTSELLERS / NEW ───────────── */}
+      <section className={styles.bestsellers}>
+        <div className={styles.container}>
+          <div ref={addRef} className={`${styles.sectionHead} ${styles.observe}`}>
+            <h2>Часто <em>печатают.</em></h2>
+            <div className={styles.sectionSub}>
+              Бестселлеры<br />
+              Апрель 2026
+            </div>
+          </div>
+
+          {bestsellers.length > 0 ? (
+            <div className={styles.grid}>
+              {bestsellers.map((p, i) => (
+                <div
+                  key={p.id}
+                  ref={addRef}
+                  className={styles.observe}
+                  style={{ animationDelay: `${i * 60}ms` }}
+                >
+                  <ProductCard product={p} onOpen={openProduct} />
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className={styles.gridPlaceholder}>Каталог загружается…</div>
+          )}
+
+          {newInWorkshop.length > 0 && (
+            <>
+              <div ref={addRef} className={`${styles.sectionHead} ${styles.observe}`} style={{ marginTop: 100 }}>
+                <h2>Новое в&nbsp;<em>мастерской.</em></h2>
+                <div className={styles.sectionSub}>
+                  Свежие работы<br />
+                  <button
+                    className={styles.linkBtn}
+                    onClick={() => navigate('/catalog')}
+                  >
+                    Весь каталог →
+                  </button>
+                </div>
+              </div>
+              <div className={styles.grid}>
+                {newInWorkshop.map((p, i) => (
+                  <div
+                    key={p.id}
+                    ref={addRef}
+                    className={styles.observe}
+                    style={{ animationDelay: `${i * 60}ms` }}
+                  >
+                    <ProductCard product={p} onOpen={openProduct} />
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
+        </div>
+      </section>
+    </>
   );
 }

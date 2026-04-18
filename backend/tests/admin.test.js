@@ -196,12 +196,28 @@ describe('PUT /api/admin/products/:id', () => {
 
 describe('DELETE /api/admin/products/:id', () => {
   test('удаляет товар', async () => {
-    db.prepare.mockReturnValue({ run: jest.fn() });
+    db.prepare.mockReturnValue({
+      run: jest.fn(),
+      get: jest.fn().mockReturnValue(undefined),
+    });
 
     const res = await request.delete('/api/admin/products/1')
       .set('Authorization', `Bearer ${adminToken()}`);
 
     expect(res.status).toBe(200);
     expect(res.body.message).toMatch(/удалён/i);
+  });
+
+  test('отказывает в удалении товара, который есть в заказах', async () => {
+    db.prepare.mockReturnValue({
+      run: jest.fn(),
+      get: jest.fn().mockReturnValue({ 1: 1 }),
+    });
+
+    const res = await request.delete('/api/admin/products/1')
+      .set('Authorization', `Bearer ${adminToken()}`);
+
+    expect(res.status).toBe(400);
+    expect(res.body.error).toMatch(/в оформленных заказах/i);
   });
 });

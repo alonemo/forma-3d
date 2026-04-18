@@ -37,7 +37,7 @@ beforeEach(() => {
 describe('Catalog: рендер', () => {
   test('показывает заголовок каталога', async () => {
     renderCatalog();
-    expect(screen.getByText('Готовые изделия')).toBeInTheDocument();
+    expect(screen.getByRole('heading', { level: 1, name: /каталог/i })).toBeInTheDocument();
   });
 
   test('показывает скелетоны при начальной загрузке', () => {

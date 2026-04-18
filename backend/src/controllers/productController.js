@@ -1,5 +1,15 @@
 const db = require('../db');
 
+const hydrateProduct = (row) => {
+  if (!row) return row;
+  let colors = [];
+  if (row.colors) {
+    try { const parsed = JSON.parse(row.colors); if (Array.isArray(parsed)) colors = parsed; }
+    catch { colors = []; }
+  }
+  return { ...row, colors };
+};
+
 const getProducts = (req, res) => {
   const { category, material, sort, order = 'asc', search } = req.query;
   let sql = 'SELECT * FROM products WHERE 1=1';
@@ -15,7 +25,7 @@ const getProducts = (req, res) => {
   sql += ` ORDER BY ${sortField} ${sortOrder}`;
 
   try {
-    res.json(db.prepare(sql).all(...params));
+    res.json(db.prepare(sql).all(...params).map(hydrateProduct));
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Ошибка сервера' });
@@ -25,7 +35,7 @@ const getProducts = (req, res) => {
 const getProduct = (req, res) => {
   const product = db.prepare('SELECT * FROM products WHERE id=?').get(req.params.id);
   if (!product) return res.status(404).json({ error: 'Товар не найден' });
-  res.json(product);
+  res.json(hydrateProduct(product));
 };
 
 const getCategories = (req, res) => {
@@ -42,4 +52,4 @@ const getMaterials = (req, res) => {
   res.json(rows.map(r => r.material));
 };
 
-module.exports = { getProducts, getProduct, getCategories, getMaterials };
+module.exports = { getProducts, getProduct, getCategories, getMaterials, hydrateProduct };

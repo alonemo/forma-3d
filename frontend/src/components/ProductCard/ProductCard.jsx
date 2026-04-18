@@ -1,24 +1,17 @@
 import React from 'react';
-import { Card, CardContent, CardActions, Typography, Button, Chip, Box, Tooltip } from '@mui/material';
-import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
+import { Chip } from '@mui/material';
 import useCartStore from '../../store/cartStore';
 import FadeText from '../FadeText/FadeText';
-import { mediaUrl } from '../../utils/mediaUrl';
+import ProductForm from '../ProductForm/ProductForm';
+import { skuFor } from '../../utils/format';
 import styles from './ProductCard.module.css';
 
-const CATEGORY_EMOJI = {
-  'Органайзеры': '🗂️', 'Подставки': '🖥️', 'Декор': '🏺', 'Автотовары': '🚗',
-  'Аксессуары': '🔑', 'Электроника': '⚡', 'Фигурки': '🐉', 'default': '🖨️',
-};
-
-const MATERIAL_COLOR = {
-  PLA: '#00e5ff', PETG: '#7c4dff', ABS: '#ff6d00', Resin: '#e040fb',
-};
-
-export default function ProductCard({ product }) {
+export default function ProductCard({ product, onOpen }) {
   const { addItem, toggleDrawer } = useCartStore();
-  const emoji = CATEGORY_EMOJI[product.category] || CATEGORY_EMOJI.default;
   const outOfStock = product.stock === 0;
+  const lowStock = !outOfStock && product.stock <= 5;
+
+  const handleClick = () => { if (onOpen) onOpen(product); };
 
   const handleAdd = (e) => {
     e.stopPropagation();
@@ -28,66 +21,63 @@ export default function ProductCard({ product }) {
   };
 
   return (
-    <Card className={`${styles.card} ${outOfStock ? styles.soldOut : ''}`}>
-      <Box className={styles.imageBox}>
-        {product.image_url
-          ? <img src={mediaUrl(product.image_url)} alt={product.name} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
-          : <span>{emoji}</span>
-        }
+    <div
+      className={`${styles.card} ${outOfStock ? styles.soldOut : ''}`}
+      onClick={handleClick}
+      role={onOpen ? 'button' : undefined}
+      tabIndex={onOpen ? 0 : undefined}
+    >
+      <div className={styles.imageBox}>
+        <div className={styles.overlay}>
+          <span>{product.material || ''}</span>
+          {product.category && <span className={styles.overlayRight}>{product.category}</span>}
+        </div>
+
+        <ProductForm product={product} />
+
         {outOfStock && (
           <Chip label="Нет в наличии" size="small" color="error" className={styles.badge} />
         )}
-        {!outOfStock && product.stock <= 5 && (
+        {lowStock && (
           <Chip label={`Осталось: ${product.stock}`} size="small" color="warning" className={styles.badge} />
         )}
-      </Box>
+      </div>
 
-      <CardContent sx={{ flex: 1, pb: 0, display: 'flex', flexDirection: 'column' }}>
-        <Box sx={{ display: 'flex', gap: 0.75, mb: 1, flexWrap: 'wrap' }}>
-          {product.category && (
-            <Chip label={product.category} size="small" sx={{ fontSize: '0.7rem', height: 20 }} />
+      <div className={styles.body}>
+        <div className={styles.info}>
+          <div className={styles.title}>{product.name}</div>
+          <div className={styles.sku}>
+            {skuFor(product)}
+            {product.material ? ` · ${product.material}` : ''}
+          </div>
+          {Array.isArray(product.colors) && product.colors.length > 0 && (
+            <div className={styles.colorRow} aria-label="Доступные цвета">
+              {product.colors.slice(0, 5).map((hex, idx) => (
+                <span key={`${hex}-${idx}`} className={styles.colorDot} style={{ background: hex }} />
+              ))}
+            </div>
           )}
-          {product.material && (
-            <Chip
-              label={product.material}
-              size="small"
-              sx={{ fontSize: '0.7rem', height: 20, borderColor: MATERIAL_COLOR[product.material] || '#fff', color: MATERIAL_COLOR[product.material] || '#fff' }}
-              variant="outlined"
-            />
-          )}
-        </Box>
-        <Typography variant="body1" fontWeight={600} className={styles.name}>{product.name}</Typography>
-        <div className={styles.descWrap}>
-          <FadeText variant="body2" color="text.secondary" lines={2} lineHeight={1.5}>
-            {product.description}
-          </FadeText>
+          <div className={styles.descWrap}>
+            <FadeText variant="body2" lines={2} lineHeight={1.5} className={styles.desc}
+              sx={{ fontSize: '13px', color: 'var(--ink-soft)' }}>
+              {product.description}
+            </FadeText>
+          </div>
         </div>
-        <Typography variant="h6" color={outOfStock ? 'text.disabled' : 'primary.main'} fontWeight={700} sx={{ mt: 1.5 }}>
-          {parseFloat(product.price).toLocaleString('ru-RU')} ₽
-        </Typography>
-        {outOfStock && (
-          <Typography variant="caption" sx={{ color: '#ff5252', display: 'block', mt: 0.5, fontWeight: 600 }}>
-            Товара пока нет в наличии
-          </Typography>
-        )}
-      </CardContent>
-
-      <CardActions className={styles.actions}>
-        <Tooltip title={outOfStock ? 'Нет в наличии' : 'Добавить в корзину'}>
-          <span style={{ flex: 1 }}>
-            <Button
-              variant="contained"
-              fullWidth
-              startIcon={<AddShoppingCartIcon />}
-              onClick={handleAdd}
-              disabled={outOfStock}
-              size="small"
-            >
-              В корзину
-            </Button>
-          </span>
-        </Tooltip>
-      </CardActions>
-    </Card>
+        <div className={styles.priceCol}>
+          <div className={`${styles.price} ${outOfStock ? styles.priceDisabled : ''}`}>
+            {parseFloat(product.price).toLocaleString('ru-RU')}&nbsp;₽
+          </div>
+          <button
+            className={styles.addBtn}
+            onClick={handleAdd}
+            disabled={outOfStock}
+            type="button"
+          >
+            В корзину
+          </button>
+        </div>
+      </div>
+    </div>
   );
 }

@@ -1,14 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import {
-  AppBar, Toolbar, Box, IconButton, Badge, Button, Avatar, Menu, MenuItem,
-  Divider, Tooltip, Drawer, List, ListItem, ListItemButton, ListItemText, Typography,
+  AppBar, Toolbar, Box, IconButton, Badge, Button, Menu, MenuItem,
+  Divider, Drawer,
 } from '@mui/material';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-import PrintIcon from '@mui/icons-material/Print';
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
-import LogoutIcon from '@mui/icons-material/Logout';
+import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
 import useAuthStore from '../../store/authStore';
@@ -17,9 +14,9 @@ import styles from './Navbar.module.css';
 
 const navItems = [
   { label: 'Главная', to: '/' },
-  { label: 'О нас', to: '/about' },
   { label: 'Каталог', to: '/catalog' },
   { label: 'Заказать', to: '/order' },
+  { label: 'О нас',   to: '/about' },
 ];
 
 export default function Navbar() {
@@ -33,8 +30,11 @@ export default function Navbar() {
   const cartCount = items.reduce((s, i) => s + i.quantity, 0);
 
   useEffect(() => {
-    const handler = () => setScrolled(window.scrollY > 20);
-    window.addEventListener('scroll', handler);
+    const handler = () => {
+      const next = window.scrollY > 20;
+      setScrolled((prev) => (prev === next ? prev : next));
+    };
+    window.addEventListener('scroll', handler, { passive: true });
     return () => window.removeEventListener('scroll', handler);
   }, []);
 
@@ -45,180 +45,167 @@ export default function Navbar() {
     navigate('/');
   };
 
+  const goUserArea = () => {
+    if (user) navigate('/profile'); else navigate('/login');
+  };
+
   const closeMobile = () => setMobileOpen(false);
 
   return (
     <AppBar
-      position="fixed"
+      position="sticky"
       elevation={0}
-      className={`${styles.navbar} ${scrolled ? styles.navbarScrolled : ''}`}
-      sx={{ background: 'transparent' }}
+      className={`${styles.header} ${scrolled ? styles.scrolled : ''}`}
     >
-      <Toolbar sx={{ maxWidth: 1200, width: '100%', mx: 'auto', px: { xs: 2, md: 3 } }}>
-        <NavLink to="/" className={styles.logo} style={{ color: '#e8e8f0' }}>
-          <PrintIcon sx={{ color: '#00e5ff', fontSize: 26 }} />
-          <span>Print<span className={styles.logoAccent}>3D</span></span>
+      <Toolbar disableGutters className={styles.inner}>
+        <NavLink to="/" className={styles.logo}>
+          <span className={styles.logoDot} />
+          <span className={styles.logoWord}>форма</span>
+          <span className={styles.logoSub}>студия 3D&nbsp;печати</span>
         </NavLink>
 
-        <Box sx={{ flex: 1 }} />
-
-        {/* Desktop nav links */}
-        <Box className={styles.navLinks} sx={{ display: { xs: 'none', md: 'flex' } }}>
+        <Box className={styles.nav} sx={{ display: { xs: 'none', md: 'flex' } }}>
           {navItems.map((item) => (
-            <NavLink key={item.to} to={item.to} end={item.to === '/'}>
+            <NavLink key={item.to} to={item.to} end={item.to === '/'} className={styles.navLink}>
               {({ isActive }) => (
-                <Button className={`${styles.navLink} ${isActive ? styles.navLinkActive : ''}`}>
-                  {item.label}
-                </Button>
+                <span className={isActive ? styles.navLinkActive : ''}>{item.label}</span>
               )}
             </NavLink>
           ))}
         </Box>
 
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: { xs: 0.5, md: 1 }, ml: { xs: 0, md: 2 } }}>
-          <Tooltip title="Корзина">
-            <IconButton onClick={() => toggleDrawer(true)} sx={{ color: '#9090a8', '&:hover': { color: '#00e5ff' } }}>
-              <Badge badgeContent={cartCount} color="primary" className={cartCount > 0 ? styles.cartBadge : ''}>
-                <ShoppingCartIcon />
-              </Badge>
-            </IconButton>
-          </Tooltip>
-
-          {/* Desktop: login button + avatar */}
+        <Box className={styles.right}>
           {user ? (
-            <>
-              <Tooltip title={user.name}>
-                <IconButton onClick={(e) => setAnchorEl(e.currentTarget)} sx={{ p: 0.5, display: { xs: 'none', md: 'flex' } }}>
-                  <Avatar sx={{ width: 34, height: 34, bgcolor: 'primary.main', color: '#0a0a0f', fontSize: 14, fontWeight: 700 }}>
-                    {user.name?.[0]?.toUpperCase()}
-                  </Avatar>
-                </IconButton>
-              </Tooltip>
-              <Menu
-                anchorEl={anchorEl}
-                open={Boolean(anchorEl)}
-                onClose={() => setAnchorEl(null)}
-                PaperProps={{ sx: { mt: 1, minWidth: 180 } }}
-              >
-                <MenuItem onClick={() => { navigate('/profile'); setAnchorEl(null); }}>
-                  <AccountCircleIcon fontSize="small" sx={{ mr: 1.5, color: 'primary.main' }} />
-                  Личный кабинет
-                </MenuItem>
-                {user.role === 'admin' && (
-                  <MenuItem onClick={() => { navigate('/admin'); setAnchorEl(null); }}>
-                    <AdminPanelSettingsIcon fontSize="small" sx={{ mr: 1.5, color: 'warning.main' }} />
-                    Панель админа
-                  </MenuItem>
-                )}
-                <Divider />
-                <MenuItem onClick={handleLogout}>
-                  <LogoutIcon fontSize="small" sx={{ mr: 1.5, color: 'error.main' }} />
-                  Выйти
-                </MenuItem>
-              </Menu>
-            </>
-          ) : (
             <Button
-              variant="outlined"
-              size="small"
-              onClick={() => navigate('/login')}
-              sx={{ display: { xs: 'none', md: 'flex' }, borderColor: 'rgba(0,229,255,0.4)', color: '#00e5ff', '&:hover': { borderColor: '#00e5ff', background: 'rgba(0,229,255,0.08)' } }}
+              onClick={(e) => setAnchorEl(e.currentTarget)}
+              className={styles.userBtn}
+              startIcon={<PersonOutlineIcon sx={{ fontSize: 18 }} />}
+              sx={{ display: { xs: 'none', sm: 'inline-flex' } }}
             >
-              Войти
+              {user.name?.split(' ')[0]}
             </Button>
+          ) : (
+            <IconButton
+              onClick={goUserArea}
+              className={styles.iconBtn}
+              aria-label="Войти"
+              title="Войти"
+              sx={{ display: { xs: 'none', sm: 'inline-flex' } }}
+            >
+              <PersonOutlineIcon sx={{ fontSize: 20 }} />
+            </IconButton>
           )}
 
-          {/* Mobile hamburger */}
+          <Menu
+            anchorEl={anchorEl}
+            open={Boolean(anchorEl)}
+            onClose={() => setAnchorEl(null)}
+          >
+            <MenuItem onClick={() => { navigate('/profile'); setAnchorEl(null); }}>
+              Личный кабинет
+            </MenuItem>
+            {user?.role === 'admin' && (
+              <MenuItem onClick={() => { navigate('/admin'); setAnchorEl(null); }}>
+                Панель админа
+              </MenuItem>
+            )}
+            <Divider />
+            <MenuItem onClick={handleLogout}>Выйти</MenuItem>
+          </Menu>
+
+          <IconButton
+            onClick={() => toggleDrawer(true)}
+            className={styles.iconBtn}
+            aria-label="Корзина"
+          >
+            <Badge badgeContent={cartCount} color="secondary" overlap="circular">
+              <ShoppingCartIcon sx={{ fontSize: 20 }} />
+            </Badge>
+          </IconButton>
+
           <IconButton
             onClick={() => setMobileOpen(true)}
-            sx={{ display: { xs: 'flex', md: 'none' }, color: '#9090a8', '&:hover': { color: '#e8e8f0' } }}
+            className={styles.iconBtn}
+            sx={{ display: { xs: 'inline-flex', md: 'none' } }}
             aria-label="Открыть меню"
           >
-            <MenuIcon />
+            <MenuIcon sx={{ fontSize: 22 }} />
           </IconButton>
         </Box>
       </Toolbar>
 
-      {/* Mobile drawer */}
       <Drawer
         anchor="right"
         open={mobileOpen}
         onClose={closeMobile}
-        PaperProps={{ sx: { width: 270, background: '#0d0d16', borderLeft: '1px solid rgba(255,255,255,0.07)', display: 'flex', flexDirection: 'column' } }}
+        PaperProps={{ className: styles.mobileDrawer, sx: { width: 300 } }}
       >
-        {/* Header */}
-        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', px: 2.5, py: 2, borderBottom: '1px solid rgba(255,255,255,0.07)' }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            <PrintIcon sx={{ color: '#00e5ff', fontSize: 22 }} />
-            <Typography fontWeight={800} fontSize="1.1rem" color="#e8e8f0">
-              Print<Box component="span" sx={{ color: '#00e5ff' }}>3D</Box>
-            </Typography>
-          </Box>
-          <IconButton onClick={closeMobile} size="small" sx={{ color: '#9090a8' }}>
+        <div className={styles.mobileHeader}>
+          <span className={styles.logo}>
+            <span className={styles.logoDot} />
+            <span className={styles.logoWord}>форма</span>
+          </span>
+          <IconButton onClick={closeMobile} size="small">
             <CloseIcon fontSize="small" />
           </IconButton>
-        </Box>
+        </div>
 
-        {/* Nav links */}
-        <List sx={{ pt: 1, flex: 1 }}>
-          {navItems.map((item) => (
-            <ListItem key={item.to} disablePadding>
-              <NavLink to={item.to} end={item.to === '/'} style={{ width: '100%', textDecoration: 'none' }}>
-                {({ isActive }) => (
-                  <ListItemButton
-                    onClick={closeMobile}
-                    sx={{
-                      py: 1.5, px: 3,
-                      color: isActive ? '#00e5ff' : '#9090a8',
-                      background: isActive ? 'rgba(0,229,255,0.06)' : 'transparent',
-                      borderLeft: `3px solid ${isActive ? '#00e5ff' : 'transparent'}`,
-                      '&:hover': { color: '#e8e8f0', background: 'rgba(255,255,255,0.04)', borderLeftColor: 'rgba(255,255,255,0.2)' },
-                    }}
-                  >
-                    <ListItemText
-                      primary={item.label}
-                      primaryTypographyProps={{ fontWeight: isActive ? 700 : 400, fontSize: '0.95rem' }}
-                    />
-                  </ListItemButton>
-                )}
-              </NavLink>
-            </ListItem>
+        <div className={styles.mobileNav}>
+          {navItems.map((item, i) => (
+            <NavLink
+              key={item.to}
+              to={item.to}
+              end={item.to === '/'}
+              onClick={closeMobile}
+              className={styles.mobileLinkWrap}
+            >
+              {({ isActive }) => (
+                <div className={`${styles.mobileLink} ${isActive ? styles.mobileLinkActive : ''}`}>
+                  <span className={styles.mobileLinkNum}>{String(i + 1).padStart(2, '0')}</span>
+                  <span>{item.label}</span>
+                </div>
+              )}
+            </NavLink>
           ))}
-        </List>
+        </div>
 
-        {/* Auth section at bottom */}
-        <Box sx={{ p: 2.5, borderTop: '1px solid rgba(255,255,255,0.07)' }}>
+        <div className={styles.mobileFooter}>
           {user ? (
             <>
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 2 }}>
-                <Avatar sx={{ width: 38, height: 38, bgcolor: 'primary.main', color: '#0a0a0f', fontSize: 15, fontWeight: 700 }}>
-                  {user.name?.[0]?.toUpperCase()}
-                </Avatar>
-                <Box sx={{ minWidth: 0 }}>
-                  <Typography variant="body2" fontWeight={600} color="#e8e8f0" noWrap>{user.name}</Typography>
-                  <Typography variant="caption" color="text.secondary" noWrap display="block">{user.email}</Typography>
-                </Box>
-              </Box>
-              <Button fullWidth variant="outlined" size="small" onClick={() => { navigate('/profile'); closeMobile(); }}
-                sx={{ mb: 1, borderColor: 'rgba(255,255,255,0.15)', color: '#e8e8f0', '&:hover': { borderColor: '#00e5ff', color: '#00e5ff' } }}>
+              <div className={styles.mobileAccountLabel}>Аккаунт</div>
+              <div className={styles.mobileAccountName}>{user.name}</div>
+              <Button
+                fullWidth
+                variant="outlined"
+                onClick={() => { navigate('/profile'); closeMobile(); }}
+                sx={{ mb: 1 }}
+              >
                 Личный кабинет
               </Button>
               {user.role === 'admin' && (
-                <Button fullWidth variant="outlined" color="warning" size="small"
-                  onClick={() => { navigate('/admin'); closeMobile(); }} sx={{ mb: 1 }}>
-                  Панель админа
+                <Button
+                  fullWidth
+                  variant="outlined"
+                  onClick={() => { navigate('/admin'); closeMobile(); }}
+                  sx={{ mb: 1 }}
+                >
+                  Админка
                 </Button>
               )}
-              <Button fullWidth variant="text" color="error" size="small" onClick={handleLogout}>
+              <Button fullWidth variant="text" onClick={handleLogout} sx={{ color: 'var(--error)' }}>
                 Выйти
               </Button>
             </>
           ) : (
-            <Button fullWidth variant="contained" onClick={() => { navigate('/login'); closeMobile(); }}>
+            <Button
+              fullWidth
+              variant="contained"
+              onClick={() => { navigate('/login'); closeMobile(); }}
+            >
               Войти
             </Button>
           )}
-        </Box>
+        </div>
       </Drawer>
     </AppBar>
   );

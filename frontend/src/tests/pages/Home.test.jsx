@@ -10,6 +10,14 @@ vi.mock('react-router-dom', async () => {
   return { ...actual, useNavigate: () => vi.fn() };
 });
 
+// Mock product fetch so the network call inside Home doesn't fail in jsdom
+vi.mock('../../api/products', () => ({
+  getProductsApi: () => Promise.resolve({ data: [] }),
+  getProductApi: () => Promise.resolve({ data: null }),
+  getCategoriesApi: () => Promise.resolve({ data: [] }),
+  getMaterialsApi: () => Promise.resolve({ data: [] }),
+}));
+
 // IntersectionObserver не существует в jsdom
 global.IntersectionObserver = vi.fn(() => ({
   observe: vi.fn(),
@@ -27,17 +35,12 @@ const renderHome = () =>
 describe('Страница Home: контент', () => {
   test('рендерит главный заголовок', () => {
     renderHome();
-    expect(screen.getByText(/воплощаем/i)).toBeInTheDocument();
+    expect(screen.getByRole('heading', { level: 1, name: /собранные/i })).toBeInTheDocument();
   });
 
-  test('рендерит подзаголовок hero', () => {
+  test('рендерит hero-эйбрау со студией и городом', () => {
     renderHome();
-    expect(screen.getByText(/профессиональная 3d-печать/i)).toBeInTheDocument();
-  });
-
-  test('рендерит кнопку "Заказать изделие"', () => {
-    renderHome();
-    expect(screen.getByRole('button', { name: /заказать изделие/i })).toBeInTheDocument();
+    expect(screen.getByText(/студия 3d-печати.*москва/i)).toBeInTheDocument();
   });
 
   test('рендерит кнопку "Смотреть каталог"', () => {
@@ -45,47 +48,40 @@ describe('Страница Home: контент', () => {
     expect(screen.getByRole('button', { name: /смотреть каталог/i })).toBeInTheDocument();
   });
 
-  test('рендерит секцию преимуществ', () => {
+  test('рендерит кнопку "Заказать изделие"', () => {
     renderHome();
-    expect(screen.getByText('Наши преимущества')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /заказать изделие/i })).toBeInTheDocument();
   });
 
-  test('рендерит 6 карточек преимуществ', () => {
+  test('рендерит hero-мета метки', () => {
     renderHome();
-    expect(screen.getByText('Быстрое изготовление')).toBeInTheDocument();
-    expect(screen.getByText('Точность до 0.1 мм')).toBeInTheDocument();
-    expect(screen.getByText('Постобработка')).toBeInTheDocument();
+    expect(screen.getByText('Принтеров')).toBeInTheDocument();
+    expect(screen.getByText('Работ выполнено')).toBeInTheDocument();
+    expect(screen.getByText('Средний срок')).toBeInTheDocument();
   });
 
-  test('рендерит секцию "Как это работает"', () => {
+  test('рендерит блок философии', () => {
     renderHome();
-    expect(screen.getByText('Как это работает')).toBeInTheDocument();
+    expect(screen.getByText(/мы не прячем слои печати/i)).toBeInTheDocument();
   });
 
-  test('рендерит шаги процесса', () => {
+  test('рендерит 4 шага процесса', () => {
     renderHome();
-    expect(screen.getByText('Оставьте заявку')).toBeInTheDocument();
-    expect(screen.getByText('Согласование')).toBeInTheDocument();
-    expect(screen.getByText('Производство')).toBeInTheDocument();
-    expect(screen.getByText('Получение')).toBeInTheDocument();
+    expect(screen.getByRole('heading', { level: 4, name: /модель и цвет/i })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { level: 4, name: /на одном станке/i })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { level: 4, name: /руки мастера/i })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { level: 4, name: /3–7 дней/i })).toBeInTheDocument();
   });
 
-  test('рендерит секцию материалов', () => {
+  test('рендерит секцию бестселлеров', () => {
     renderHome();
-    expect(screen.getByText('PLA')).toBeInTheDocument();
-    expect(screen.getByText('PETG')).toBeInTheDocument();
-    expect(screen.getByText('ABS')).toBeInTheDocument();
-    expect(screen.getByText('Resin')).toBeInTheDocument();
+    expect(screen.getByText(/бестселлеры/i)).toBeInTheDocument();
   });
 
-  test('рендерит CTA секцию', () => {
+  test('рендерит ticker с материалами', () => {
     renderHome();
-    expect(screen.getByText('Готовы начать?')).toBeInTheDocument();
-  });
-
-  test('рендерит статистику', () => {
-    renderHome();
-    expect(screen.getByText('500+')).toBeInTheDocument();
-    expect(screen.getByText('0.1 мм')).toBeInTheDocument();
+    // ticker content is rendered twice for seamless infinite scroll
+    expect(screen.getAllByText(/pla из кукурузы/i).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(/petg/i).length).toBeGreaterThan(0);
   });
 });

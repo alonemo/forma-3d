@@ -1,3 +1,43 @@
+/* ФОРМА — design tokens */
+:root {
+  --bg: #f2ebe0;
+  --bg-2: #eae0d0;
+  --bg-3: #e0d3bd;
+  --paper: #f7f1e6;
+  --ink: #2b2118;
+  --ink-soft: #4a3e32;
+  --muted: #8a7862;
+  --line: #d6c6ae;
+  --line-soft: #e2d5be;
+  --terracotta: #b85c3c;
+  --terracotta-dark: #8f4529;
+  --ochre: #c8893b;
+  --olive: #8a7a3f;
+  --success: #5e7a3e;
+  --warn: #c8893b;
+  --error: #9a2820;
+
+  /* Legacy aliases kept for pages not yet redesigned */
+  --surface: #eae0d0;
+  --surface-alt: #e0d3bd;
+  --text: #2b2118;
+  --text-2: #4a3e32;
+  --text-3: #8a7862;
+  --accent: #b85c3c;
+  --accent-2: #8f4529;
+  --rule: #d6c6ae;
+  --rule-soft: #e2d5be;
+  --rule-strong: rgba(43, 33, 24, 0.3);
+
+  --font-serif: 'Instrument Serif', 'Source Serif Pro', Georgia, serif;
+  --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+
+  --r-sm: 2px;
+  --r-md: 4px;
+  --r-lg: 8px;
+}
+
 *, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
@@ -6,25 +46,158 @@
 
 html {
   scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
 body {
-  font-family: 'Inter', sans-serif;
-  background-color: #0a0a0f;
-  color: #e8e8f0;
+  font-family: var(--font-sans);
+  background-color: var(--bg);
+  color: var(--ink);
   overflow-x: hidden;
+  font-size: 15px;
+  line-height: 1.5;
+  min-height: 100vh;
 }
 
-::-webkit-scrollbar {
+a { color: inherit; text-decoration: none; }
+img { max-width: 100%; display: block; }
+
+::selection { background: var(--terracotta); color: var(--paper); }
+
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--line); border-radius: 5px; }
+::-webkit-scrollbar-thumb:hover { background: var(--muted); }
+
+input:-webkit-autofill,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:hover {
+  -webkit-box-shadow: 0 0 0 1000px var(--paper) inset;
+  -webkit-text-fill-color: var(--ink);
+  caret-color: var(--ink);
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+/* ────────────────────────── Shared editorial utilities ────────────────────────── */
+
+.mono {
+  font-family: var(--font-mono);
+  font-feature-settings: 'ss01';
+  letter-spacing: -0.01em;
+}
+
+.serif {
+  font-family: var(--font-serif);
+  font-weight: 400;
+  letter-spacing: -0.02em;
+}
+
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-weight: 500;
+}
+
+.italic-accent {
+  font-family: var(--font-serif);
+  font-style: italic;
+  color: var(--terracotta);
+}
+
+.container {
+  max-width: 1360px;
+  margin: 0 auto;
+  padding: 0 40px;
+}
+
+@media (max-width: 720px) {
+  .container { padding: 0 20px; }
+}
+
+/* Page-level head block used by catalog/admin/profile */
+.page-head {
+  padding: 40px 0 32px;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 8px;
+}
+.page-head h1 {
+  font-family: var(--font-serif);
+  font-size: clamp(56px, 7vw, 112px);
+  letter-spacing: -0.03em;
+  line-height: 0.95;
+  font-weight: 400;
+}
+.page-head h1 em {
+  font-style: italic;
+  color: var(--terracotta);
+}
+.page-head .sub {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-top: 20px;
+  gap: 32px;
+}
+.page-head p {
+  font-size: 17px;
+  color: var(--ink-soft);
+  max-width: 520px;
+  line-height: 1.55;
+}
+
+@media (max-width: 720px) {
+  .page-head .sub { flex-direction: column; align-items: flex-start; }
+}
+
+/* Legacy helpers retained for pages still in old register */
+.eyebrow-dot::before {
+  content: '';
+  display: inline-block;
   width: 6px;
+  height: 6px;
+  background: var(--terracotta);
+  border-radius: 50%;
+  margin-right: 10px;
+  transform: translateY(-2px);
 }
-::-webkit-scrollbar-track {
-  background: #0a0a0f;
+.rule { border: 0; border-top: 1px solid var(--line); width: 100%; height: 1px; }
+.num-marker {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+  font-weight: 500;
+  text-transform: uppercase;
 }
-::-webkit-scrollbar-thumb {
-  background: #00e5ff44;
-  border-radius: 3px;
+
+/* Page transition — fades new route in to complement top loader bar */
+.page-enter {
+  animation: forma-page-enter 0.42s cubic-bezier(0.22, 1, 0.36, 1) both;
+  will-change: opacity, transform;
 }
-::-webkit-scrollbar-thumb:hover {
-  background: #00e5ff88;
+
+@keyframes forma-page-enter {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
+
+@media (prefers-reduced-motion: reduce) {
+  .page-enter { animation: none; }
+}
+
+/* MUI overlay overrides */
+.MuiBackdrop-root { background-color: rgba(43, 33, 24, 0.35) !important; }
+.MuiTooltip-tooltip {
+  background: var(--ink) !important;
+  color: var(--paper) !important;
+  font-family: var(--font-mono) !important;
+  font-size: 11px !important;
+  letter-spacing: 0.05em !important;
+  border-radius: 2px !important;
+}
+

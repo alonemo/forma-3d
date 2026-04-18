@@ -5,13 +5,14 @@ const useCartStore = create((set, get) => ({
   items: [],
   open: false,
 
-  addItem: (product) => {
+  addItem: (product, qty = 1) => {
+    const add = Math.max(1, qty);
     const items = get().items;
     const existing = items.find((i) => i.id === product.id);
     if (existing) {
-      set({ items: items.map((i) => i.id === product.id ? { ...i, quantity: i.quantity + 1 } : i) });
+      set({ items: items.map((i) => i.id === product.id ? { ...i, quantity: i.quantity + add } : i) });
     } else {
-      set({ items: [...items, { ...product, quantity: 1 }] });
+      set({ items: [...items, { ...product, quantity: add }] });
     }
   },
 

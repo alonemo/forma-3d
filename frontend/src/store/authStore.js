@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { loginApi, registerApi, getMeApi } from '../api/auth';
+import { loginApi, registerApi, getMeApi, updateMeApi } from '../api/auth';
 
 const useAuthStore = create((set) => ({
   user: null,
@@ -42,6 +42,19 @@ const useAuthStore = create((set) => ({
     } catch {
       localStorage.removeItem('token');
       set({ user: null, token: null });
+    }
+  },
+
+  updateMe: async (name, email) => {
+    set({ loading: true, error: null });
+    try {
+      const { data } = await updateMeApi({ name, email });
+      localStorage.setItem('token', data.token);
+      set({ user: data.user, token: data.token, loading: false });
+      return true;
+    } catch (err) {
+      set({ error: err.response?.data?.error || 'Не удалось сохранить', loading: false });
+      return false;
     }
   },
 

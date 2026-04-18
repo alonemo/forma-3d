@@ -9,6 +9,7 @@ import PageLoader from './components/PageLoader/PageLoader';
 import Home from './pages/Home/Home';
 import About from './pages/About/About';
 import Catalog from './pages/Catalog/Catalog';
+import ProductDetail from './pages/ProductDetail/ProductDetail';
 import Order from './pages/Order/Order';
 import Profile from './pages/Profile/Profile';
 import Admin from './pages/Admin/Admin';
@@ -25,21 +26,28 @@ export default function App() {
 
   useEffect(() => { fetchMe(); }, []);
 
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+  }, [location.pathname]);
+
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
       <PageLoader />
       {!isAuthPage && <Navbar />}
       <Box sx={{ flex: 1 }}>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/catalog" element={<Catalog />} />
-          <Route path="/order" element={<Order />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
-          <Route path="/admin" element={<ProtectedRoute adminOnly><Admin /></ProtectedRoute>} />
-        </Routes>
+        <div key={location.pathname} className="page-enter">
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/catalog" element={<Catalog />} />
+            <Route path="/catalog/:id" element={<ProductDetail />} />
+            <Route path="/order" element={<Order />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+            <Route path="/admin" element={<ProtectedRoute adminOnly><Admin /></ProtectedRoute>} />
+          </Routes>
+        </div>
       </Box>
       {!isAuthPage && <Footer />}
       <CartDrawer />

@@ -1,28 +1,27 @@
 import React, { useEffect, useRef } from 'react';
-import { Container, Grid, Typography, Box, Chip } from '@mui/material';
 import styles from './About.module.css';
 
 const TEAM = [
-  { emoji: '👨‍💻', name: 'Алексей Воронов', role: 'Основатель & CTO', bg: 'rgba(0,229,255,0.1)', color: '#00e5ff', desc: '10 лет в промышленном дизайне и прототипировании. Влюблён в точность.' },
-  { emoji: '🎨', name: 'Мария Белова', role: 'Дизайнер & 3D-моделлер', bg: 'rgba(124,77,255,0.1)', color: '#7c4dff', desc: 'Выпускница МГХПА. Создаёт модели для печати любой сложности.' },
-  { emoji: '🔧', name: 'Дмитрий Орлов', role: 'Инженер производства', bg: 'rgba(255,109,0,0.1)', color: '#ff6d00', desc: 'Настраивает оборудование и следит за качеством каждого изделия.' },
-  { emoji: '📦', name: 'Ольга Никитина', role: 'Менеджер клиентов', bg: 'rgba(0,230,118,0.1)', color: '#00e676', desc: 'Координирует заказы и всегда на связи с клиентами.' },
+  { name: 'Алексей Воронов',  role: 'Основатель · CTO',         since: '2019', desc: 'Десять лет в промышленном дизайне и прототипировании. Следит за точностью и качеством.' },
+  { name: 'Мария Белова',     role: 'Дизайнер · 3D-моделлер',   since: '2020', desc: 'Выпускница МГХПА. Моделирует под печать любой сложности, от декора до функциональных изделий.' },
+  { name: 'Дмитрий Орлов',    role: 'Инженер производства',     since: '2021', desc: 'Настраивает оборудование, обслуживает парк принтеров и проводит контроль каждого заказа.' },
+  { name: 'Ольга Никитина',   role: 'Менеджер клиентов',        since: '2022', desc: 'Координирует заказы и консультирует по выбору материалов. Всегда на связи.' },
 ];
 
 const VALUES = [
-  { emoji: '🎯', title: 'Точность', desc: 'Каждый заказ проходит контроль качества. Отклонение не более 0.1 мм.' },
-  { emoji: '⚡', title: 'Скорость', desc: 'Стремимся выполнять заказы в кратчайшие сроки без потери качества.' },
-  { emoji: '🤝', title: 'Честность', desc: 'Реалистичные сроки, прозрачное ценообразование, никаких скрытых платежей.' },
-  { emoji: '🌱', title: 'Экологичность', desc: 'Используем биоразлагаемые материалы и перерабатываем производственные отходы.' },
+  { title: 'Точность',     desc: 'Каждый заказ проходит контроль качества. Отклонение — не более 0.1 мм по контрольным размерам.' },
+  { title: 'Скорость',     desc: 'Работаем в короткие сроки без потери качества. Статус заказа доступен в личном кабинете.' },
+  { title: 'Честность',    desc: 'Реальные сроки, прозрачное ценообразование, никаких скрытых платежей и сюрпризов в счёте.' },
+  { title: 'Экологичность',desc: 'Биоразлагаемые материалы как основа, переработка производственных отходов.' },
 ];
 
 const HISTORY = [
-  { year: '2019', text: 'Основание компании. Первый принтер, первый заказ — органайзер для стола.' },
-  { year: '2020', text: 'Запуск онлайн-каталога. Первые 100 клиентов за год.' },
-  { year: '2021', text: 'Расширение парка оборудования. Добавили SLA-печать для высокоточных изделий.' },
-  { year: '2022', text: 'Партнёрство с 3 промышленными предприятиями Москвы и МО.' },
-  { year: '2023', text: 'Переезд в новый цех 200 м². Штат вырос до 8 человек.' },
-  { year: '2024', text: 'Запуск нового сайта. Более 500 выполненных заказов.' },
+  ['2019', 'Основание студии. Один принтер, один заказ — органайзер для рабочего стола.'],
+  ['2020', 'Запуск онлайн-каталога. Первые сто клиентов. Добавлен материал PETG.'],
+  ['2021', 'Расширение парка. SLA-печать для высокоточных изделий и ювелирных мастер-моделей.'],
+  ['2022', 'Партнёрство с тремя промышленными предприятиями Москвы и Московской области.'],
+  ['2023', 'Переезд в цех 200 м². Штат вырос до восьми человек. Ночные смены для крупных заказов.'],
+  ['2024', 'Запуск нового сайта. Пятисотый заказ отгружен в августе.'],
 ];
 
 export default function About() {
@@ -40,120 +39,156 @@ export default function About() {
   const r = (el) => { if (el && !observeRefs.current.includes(el)) observeRefs.current.push(el); };
 
   return (
-    <div>
-      {/* Hero */}
+    <div className={styles.page}>
       <section className={styles.hero}>
-        <div className={styles.heroBg} />
-        <Container maxWidth="lg" sx={{ position: 'relative', zIndex: 1 }}>
-          <Chip label="О компании" size="small" sx={{ mb: 2, background: 'rgba(124,77,255,0.15)', color: '#7c4dff', fontWeight: 600 }} />
-          <Typography variant="h2" fontWeight={800} sx={{ mb: 2, maxWidth: 600 }}>
-            Мы делаем <span style={{ color: '#00e5ff' }}>сложное</span> — простым
-          </Typography>
-          <Typography color="text.secondary" sx={{ maxWidth: 580, lineHeight: 1.8, fontSize: '1.1rem' }}>
-            Print3D — московская мастерская 3D-печати. Работаем с 2019 года.
-            Выполнили более 500 заказов для частных лиц, стартапов и производственных компаний.
-            Наша миссия — сделать технологии 3D-печати доступными для каждого.
-          </Typography>
-        </Container>
+        <div>
+          <div className={styles.eyebrow}>О студии · Print3D · Москва</div>
+          <h1 className={styles.heroTitle}>
+            Мы делаем<br />
+            <span className={styles.heroTitleItalic}>сложное</span> простым.
+          </h1>
+        </div>
+
+        <div className={styles.heroLede}>
+          Print3D — московская студия 3D-печати. Работаем с&nbsp;2019 года,
+          выполнили более пятисот заказов для частных лиц, стартапов и&nbsp;производственных компаний.
+          <div className="muted">
+            Наша цель — сделать технологию 3D-печати доступной для каждого, у&nbsp;кого есть
+            идея и&nbsp;желание воплотить её в&nbsp;материи.
+          </div>
+        </div>
       </section>
 
       {/* Values */}
-      <section style={{ padding: '60px 0' }}>
-        <Container maxWidth="lg">
-          <Box ref={r} className={styles.observeEl} sx={{ mb: 5 }}>
-            <Typography variant="overline" color="primary.main" fontWeight={700} letterSpacing={2}>Ценности</Typography>
-            <Typography variant="h4" fontWeight={700}>Что нас отличает</Typography>
-          </Box>
-          <Grid container spacing={3}>
-            {VALUES.map((v, i) => (
-              <Grid item xs={12} sm={6} key={v.title}>
-                <div ref={r} className={`${styles.observeEl} ${styles.valueCard}`} style={{ transitionDelay: `${i * 80}ms` }}>
-                  <div style={{ fontSize: '2rem' }}>{v.emoji}</div>
-                  <div>
-                    <Typography variant="h6" fontWeight={700} gutterBottom>{v.title}</Typography>
-                    <Typography variant="body2" color="text.secondary" lineHeight={1.7}>{v.desc}</Typography>
-                  </div>
-                </div>
-              </Grid>
-            ))}
-          </Grid>
-        </Container>
+      <section className={styles.section}>
+        <div ref={r} className={`${styles.sectionHead} ${styles.observeEl}`}>
+          <div className={styles.sectionNum}>01 / Ценности</div>
+          <div>
+            <h2 className={styles.sectionTitle}>Что нас отличает</h2>
+            <p className={styles.sectionLead}>
+              Четыре принципа, которые мы держим в&nbsp;голове при каждом заказе —
+              от&nbsp;первого письма до&nbsp;отправки курьеру.
+            </p>
+          </div>
+        </div>
+
+        <div className={styles.valuesList}>
+          {VALUES.map((v, i) => (
+            <div key={v.title} ref={r} className={`${styles.valueItem} ${styles.observeEl}`}
+              style={{ transitionDelay: `${i * 60}ms` }}>
+              <div className={styles.valueNum}>
+                {String(i + 1).padStart(2, '0')} / 04
+              </div>
+              <div className={styles.valueTitle}>{v.title}</div>
+              <div className={styles.valueDesc}>{v.desc}</div>
+            </div>
+          ))}
+        </div>
       </section>
 
       {/* Team */}
-      <section style={{ padding: '60px 0', background: 'rgba(255,255,255,0.01)' }}>
-        <Container maxWidth="lg">
-          <Box ref={r} className={styles.observeEl} sx={{ mb: 5, textAlign: 'center' }}>
-            <Typography variant="overline" color="primary.main" fontWeight={700} letterSpacing={2}>Команда</Typography>
-            <Typography variant="h4" fontWeight={700}>Люди за принтерами</Typography>
-          </Box>
-          <Grid container spacing={3}>
+      <div className={styles.sectionAltWrap}>
+        <section className={styles.section}>
+          <div ref={r} className={`${styles.sectionHead} ${styles.observeEl}`}>
+            <div className={styles.sectionNum}>02 / Команда</div>
+            <div>
+              <h2 className={styles.sectionTitle}>Люди за принтерами</h2>
+              <p className={styles.sectionLead}>
+                Маленькая студия — четыре человека, каждый отвечает за&nbsp;свой участок
+                производственной цепочки.
+              </p>
+            </div>
+          </div>
+
+          <div className={styles.teamList}>
             {TEAM.map((m, i) => (
-              <Grid item xs={12} sm={6} md={3} key={m.name}>
-                <div ref={r} className={`${styles.observeEl} ${styles.teamCard}`} style={{ transitionDelay: `${i * 80}ms` }}>
-                  <div className={styles.avatar} style={{ background: m.bg, color: m.color }}>{m.emoji}</div>
-                  <Typography fontWeight={700} gutterBottom>{m.name}</Typography>
-                  <Typography variant="caption" sx={{ color: m.color, fontWeight: 600 }}>{m.role}</Typography>
-                  <Typography variant="body2" color="text.secondary" sx={{ mt: 1, lineHeight: 1.6 }}>{m.desc}</Typography>
+              <div key={m.name} ref={r} className={`${styles.teamRow} ${styles.observeEl}`}
+                style={{ transitionDelay: `${i * 60}ms` }}>
+                <div className={styles.teamNum}>
+                  {String(i + 1).padStart(2, '0')} / 04
                 </div>
-              </Grid>
+                <div>
+                  <div className={styles.teamName}>{m.name}</div>
+                  <div className={styles.teamRole}>{m.role}</div>
+                </div>
+                <div className={styles.teamDesc}>{m.desc}</div>
+                <div className={styles.teamSince}>с {m.since}</div>
+              </div>
             ))}
-          </Grid>
-        </Container>
-      </section>
+          </div>
+        </section>
+      </div>
 
       {/* History */}
-      <section style={{ padding: '80px 0' }}>
-        <Container maxWidth="lg">
-          <Grid container spacing={6} alignItems="flex-start">
-            <Grid item xs={12} md={4}>
-              <Box ref={r} className={styles.observeEl}>
-                <Typography variant="overline" color="primary.main" fontWeight={700} letterSpacing={2}>История</Typography>
-                <Typography variant="h4" fontWeight={700} sx={{ mb: 2 }}>С чего мы начинали</Typography>
-                <Typography color="text.secondary" lineHeight={1.8}>
-                  Из небольшой мастерской с одним принтером выросли в профессиональное
-                  производство с полным циклом — от моделирования до постобработки и доставки.
-                </Typography>
-              </Box>
-            </Grid>
-            <Grid item xs={12} md={8}>
-              <div ref={r} className={`${styles.observeEl} ${styles.timeline}`}>
-                {HISTORY.map((h, i) => (
-                  <div key={h.year} className={styles.timelineItem} style={{ transitionDelay: `${i * 80}ms` }}>
-                    <Typography variant="caption" color="primary.main" fontWeight={700}>{h.year}</Typography>
-                    <Typography variant="body2" color="text.secondary" lineHeight={1.7}>{h.text}</Typography>
-                  </div>
-                ))}
+      <section className={styles.section}>
+        <div className={styles.sectionHead}>
+          <div className={styles.sectionNum}>03 / История</div>
+          <div>
+            <h2 className={styles.sectionTitle}>С чего мы начинали</h2>
+          </div>
+        </div>
+
+        <div className={styles.timelineGrid}>
+          <div className={styles.timelineIntro}>
+            <p className={styles.timelineIntroText}>
+              Из небольшой мастерской с&nbsp;одним принтером — в&nbsp;профессиональное
+              производство с&nbsp;полным циклом: моделирование, печать, постобработка, доставка.
+            </p>
+          </div>
+
+          <div className={styles.timeline}>
+            {HISTORY.map(([year, text], i) => (
+              <div key={year} ref={r} className={`${styles.timelineItem} ${styles.observeEl}`}
+                style={{ transitionDelay: `${i * 60}ms` }}>
+                <div className={styles.timelineYear}>{year}</div>
+                <div className={styles.timelineText}>{text}</div>
               </div>
-            </Grid>
-          </Grid>
-        </Container>
+            ))}
+          </div>
+        </div>
       </section>
 
       {/* Contacts */}
-      <section style={{ padding: '60px 0', background: 'rgba(255,255,255,0.01)' }}>
-        <Container maxWidth="lg">
-          <Box ref={r} className={styles.observeEl} sx={{ textAlign: 'center', mb: 4 }}>
-            <Typography variant="h4" fontWeight={700}>Контакты</Typography>
-          </Box>
-          <Grid container spacing={3} justifyContent="center" alignItems="stretch">
-            {[
-              { emoji: '📞', title: 'Телефон', val: '+7 (495) 123-45-67' },
-              { emoji: '✉️', title: 'Email', val: 'info@print3d.ru' },
-              { emoji: '📍', title: 'Адрес', val: 'Технологическая ул., 15' },
-              { emoji: '⏰', title: 'Режим работы', val: 'Пн–Пт: 9:00–18:00' },
-            ].map((c, i) => (
-              <Grid item xs={12} sm={6} md={3} key={c.title}>
-                <Box ref={r} className={`${styles.observeEl} ${styles.valueCard}`} style={{ transitionDelay: `${i * 80}ms`, flexDirection: 'column', alignItems: 'center', textAlign: 'center', height: '100%' }}>
-                  <div style={{ fontSize: '2rem', marginBottom: 8 }}>{c.emoji}</div>
-                  <Typography variant="caption" color="text.secondary" fontWeight={600}>{c.title}</Typography>
-                  <Typography fontWeight={600} sx={{ mt: 0.5 }}>{c.val}</Typography>
-                </Box>
-              </Grid>
-            ))}
-          </Grid>
-        </Container>
-      </section>
+      <div className={styles.sectionAltWrap}>
+        <section className={styles.section}>
+          <div className={styles.sectionHead}>
+            <div className={styles.sectionNum}>04 / Контакты</div>
+            <div>
+              <h2 className={styles.sectionTitle}>Связаться со студией</h2>
+              <p className={styles.sectionLead}>
+                Пишите, звоните или заходите — будем рады обсудить ваш проект.
+              </p>
+            </div>
+          </div>
+
+          <div className={styles.contacts}>
+            <div className={styles.contactItem}>
+              <div className={styles.contactKey}>Телефон</div>
+              <a href="tel:+74951234567" className={styles.contactValueSmall}>
+                +7 (495) 123-45-67
+              </a>
+            </div>
+            <div className={styles.contactItem}>
+              <div className={styles.contactKey}>Email</div>
+              <a href="mailto:info@print3d.ru" className={styles.contactValueSmall}>
+                info@print3d.ru
+              </a>
+            </div>
+            <div className={styles.contactItem}>
+              <div className={styles.contactKey}>Адрес</div>
+              <div className={styles.contactValueSmall}>
+                Москва, ул. Технологическая, 15
+              </div>
+            </div>
+            <div className={styles.contactItem}>
+              <div className={styles.contactKey}>Часы работы</div>
+              <div className={styles.contactValueSmall}>
+                ПН–ПТ · 9:00–18:00
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
     </div>
   );
 }

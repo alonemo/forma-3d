@@ -1,17 +1,28 @@
 const db = require('../db');
 const { toStr } = require('../utils');
+const { hydrateProduct } = require('./productController');
+
+const serializeColors = (colors) => {
+  if (colors == null) return null;
+  if (Array.isArray(colors)) return JSON.stringify(colors);
+  if (typeof colors === 'string') {
+    try { const parsed = JSON.parse(colors); return Array.isArray(parsed) ? JSON.stringify(parsed) : null; }
+    catch { return null; }
+  }
+  return null;
+};
 
 // ─── Products ──────────────────────────────────────────────
 const createProduct = (req, res) => {
-  const { name, description, price, category, material, image_url, stock } = req.body;
+  const { name, description, price, category, material, image_url, stock, colors } = req.body;
   if (!name || !price)
     return res.status(400).json({ error: 'Название и цена обязательны' });
   try {
     const result = db.prepare(
-      'INSERT INTO products (name, description, price, category, material, image_url, stock) VALUES (?,?,?,?,?,?,?)'
-    ).run(name, description || '', price, category || null, material || null, image_url || null, stock || 0);
+      'INSERT INTO products (name, description, price, category, material, image_url, stock, colors) VALUES (?,?,?,?,?,?,?,?)'
+    ).run(name, description || '', price, category || null, material || null, image_url || null, stock || 0, serializeColors(colors));
     const product = db.prepare('SELECT * FROM products WHERE id=?').get(result.lastInsertRowid);
-    res.status(201).json(product);
+    res.status(201).json(hydrateProduct(product));
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Ошибка сервера' });
@@ -19,27 +30,31 @@ const createProduct = (req, res) => {
 };
 
 const updateProduct = (req, res) => {
-  const { name, description, price, category, material, image_url, stock } = req.body;
+  const { name, description, price, category, material, image_url, stock, colors } = req.body;
   const existing = db.prepare('SELECT * FROM products WHERE id=?').get(req.params.id);
   if (!existing) return res.status(404).json({ error: 'Товар не найден' });
   try {
+    const nextColors = colors === undefined ? existing.colors : serializeColors(colors);
     db.prepare(`
       UPDATE products SET
-        name=?, description=?, price=?, category=?, material=?, image_url=?, stock=?
+        name=?, description=?, price=?, category=?, material=?, image_url=?, stock=?, colors=?
       WHERE id=?
     `).run(
       name ?? existing.name, description ?? existing.description,
       price ?? existing.price, category ?? existing.category,
       material ?? existing.material, image_url ?? existing.image_url,
-      stock ?? existing.stock, req.params.id
+      stock ?? existing.stock, nextColors, req.params.id
     );
-    res.json(db.prepare('SELECT * FROM products WHERE id=?').get(req.params.id));
+    res.json(hydrateProduct(db.prepare('SELECT * FROM products WHERE id=?').get(req.params.id)));
   } catch (err) {
     res.status(500).json({ error: 'Ошибка сервера' });
   }
 };
 
 const deleteProduct = (req, res) => {
+  const referenced = db.prepare('SELECT 1 FROM order_items WHERE product_id=? LIMIT 1').get(req.params.id);
+  if (referenced)
+    return res.status(400).json({ error: 'Товар нельзя удалить — он присутствует в оформленных заказах' });
   db.prepare('DELETE FROM products WHERE id=?').run(req.params.id);
   res.json({ message: 'Товар удалён' });
 };
@@ -113,10 +128,22 @@ const updateOrderStatus = (req, res) => {
   if (!VALID_TRANSITIONS[order.status]?.includes(status))
     return res.status(400).json({ error: `Нельзя перевести из статуса "${order.status}" в "${status}"` });
 
-  db.prepare("UPDATE orders SET status=?, cancel_reason=?, updated_at=datetime('now') WHERE id=?")
-    .run(status, status === 'cancelled' ? (cancel_reason || null) : null, req.params.id);
-
-  res.json(db.prepare('SELECT * FROM orders WHERE id=?').get(req.params.id));
+  try {
+    db.transaction(() => {
+      if (status === 'cancelled' && order.type === 'catalog') {
+        const items = db.prepare('SELECT product_id, quantity FROM order_items WHERE order_id=?').all(order.id);
+        for (const it of items) {
+          db.prepare('UPDATE products SET stock = stock + ? WHERE id=?').run(it.quantity, it.product_id);
+        }
+      }
+      db.prepare("UPDATE orders SET status=?, cancel_reason=?, updated_at=datetime('now') WHERE id=?")
+        .run(status, status === 'cancelled' ? (cancel_reason || null) : null, req.params.id);
+    })();
+    res.json(db.prepare('SELECT * FROM orders WHERE id=?').get(req.params.id));
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Ошибка сервера' });
+  }
 };
 
 module.exports = { createProduct, updateProduct, deleteProduct, getAllOrders, updateOrderStatus };

@@ -1,0 +1,120 @@
+.root {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.layers {
+  position: absolute;
+  inset: 0;
+  background-image: repeating-linear-gradient(
+    0deg,
+    transparent 0,
+    transparent 3px,
+    rgba(43, 33, 24, 0.04) 3px,
+    rgba(43, 33, 24, 0.04) 4px
+  );
+  pointer-events: none;
+}
+
+/* ─────── Silhouettes ─────── */
+
+.vase {
+  position: absolute;
+  bottom: 10%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 45%;
+  height: 80%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 0;
+}
+
+.vaseLayer {
+  height: 3.125%;
+  margin: 0 auto;
+  box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.08);
+}
+
+.figureWrap {
+  position: absolute;
+  bottom: 12%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 38%;
+  height: 70%;
+}
+
+.figureBase {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 45%;
+  border-radius: 8% 8% 0 0;
+}
+
+.figureBody {
+  position: absolute;
+  bottom: 40%;
+  left: 25%;
+  right: 25%;
+  height: 30%;
+  border-radius: 50% 50% 20% 20%;
+}
+
+.figureHead {
+  position: absolute;
+  bottom: 65%;
+  left: 30%;
+  right: 30%;
+  height: 30%;
+  border-radius: 50%;
+}
+
+.organizerGrid {
+  position: absolute;
+  bottom: 15%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60%;
+  height: 55%;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  gap: 6px;
+}
+
+.organizerCell {
+  border-radius: 4px;
+}
+
+.toyDisk {
+  position: absolute;
+  bottom: 18%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 55%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+}
+
+.toyRing {
+  position: absolute;
+  inset: 20%;
+  border: 2px solid;
+  border-radius: 50%;
+  opacity: 0.3;
+}

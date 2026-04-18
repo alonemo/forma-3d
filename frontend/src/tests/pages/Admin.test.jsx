@@ -142,9 +142,14 @@ describe('Admin: вкладка каталога', () => {
 });
 
 describe('Admin: вкладка заказов', () => {
-  test('рендерится по умолчанию на вкладке заказов', () => {
+  test('рендерится по умолчанию на вкладке "Печатный стол"', () => {
     renderAdmin();
-    expect(screen.getByRole('tab', { name: /заказы/i })).toBeInTheDocument();
+    expect(screen.getByRole('tab', { name: /печатный стол/i })).toBeInTheDocument();
     expect(screen.getByText('Заказов нет')).toBeInTheDocument();
+  });
+
+  test('показывает вкладку Мастера с очередью', () => {
+    renderAdmin();
+    expect(screen.getByRole('tab', { name: /мастера/i })).toBeInTheDocument();
   });
 });
